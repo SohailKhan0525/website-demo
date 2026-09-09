@@ -63,14 +63,26 @@ When anyone checks the document later:
 
 ---
 
-## 4. Who Can Say What During the Judge Q&A
+## 4. Team Roles & Judge Presentation
 
-| Team Member | Topics to Answer If Asked |
-| :--- | :--- |
-| **Neelam Saidev** (Team Lead) | High-level pitch, problem statement SIH26194, overall workflow, and project vision. |
-| **Aith Sai Teja & Korra Praveen** | Blockchain layer: Hyperledger Fabric, PBFT consensus quorum, smart contracts (chaincode). |
-| **Radheshyam & Mohd Zaheeruddin** | Privacy & Off-chain storage: Why the actual document is encrypted in IPFS while only the 32-byte hash is on-chain. |
-| **Akshya** | Frontend & User Experience: W3C Verifiable Credentials, mobile responsiveness, in-browser zero-download verification. |
+- **Neelam Saidev:** Team Lead
+- **All other 5 teammates:** Members
+  - Aith Sai Teja — Member
+  - Korra Praveen — Member
+  - Radheshyam — Member
+  - Akshya — Member
+  - Mohd Zaheeruddin — Member
+
+### How We Handle the Pitch
+- **Neelam Saidev (Team Lead):** Opens the presentation, introduces Team BlackCaps (TID146), mentions problem statement SIH26194, and closes.
+- **Live Demo Walkthrough:** Open `teamblackcaps.vercel.app/verify` on the screen and show:
+  1. B.Tech certificate verification (**Valid** in 400ms).
+  2. Hospital discharge summary (**Tampered** detected).
+  3. Custom file upload (**Not found**, zero-trust security) → Click **"Anchor & Seal to Ledger"** to show live issuer consensus!
+- **If Judges Ask Questions:** Any member can chime in using these 3 simple facts:
+  1. *How does it work?* Document hash (SHA-256) is computed in the browser and matched against the distributed ledger.
+  2. *What about privacy?* The actual document is never on the blockchain—only the 32-byte hash fingerprint is stored.
+  3. *Why not a standard database?* A normal database can be altered by any admin without an audit trail; a distributed ledger with PBFT consensus is tamper-proof and multi-institutional.
 
 ---
 
