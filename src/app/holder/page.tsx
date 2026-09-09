@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { ArrowRight, Certificate, Copy, FileText, QrCode, ShieldCheck } from '@phosphor-icons/react';
-import QRCode from 'qrcode';
+import * as QRCode from 'qrcode';
 import { getHolderCredentials, HolderCredential } from '@/lib/credentials';
 
 export default function HolderPage() {
@@ -15,10 +15,7 @@ export default function HolderPage() {
     const current = getHolderCredentials()[0];
     setCredential(current ?? null);
     if (current) {
-      QRCode.toDataURL(`${window.location.origin}${current.verificationPath}`, {
-        margin: 2,
-        width: 220,
-      }).then(setQrDataUrl).catch(() => setQrDataUrl(''));
+      QRCode.toDataURL(`${window.location.origin}${current.verificationPath}`, { margin: 2, width: 220 }).then(setQrDataUrl).catch(() => setQrDataUrl(''));
     }
   }, []);
 
@@ -36,7 +33,6 @@ export default function HolderPage() {
         <h1 className="mb-4 text-4xl font-bold tracking-tight text-white md:text-5xl">Your verified credential</h1>
         <p className="text-base leading-relaxed text-[#9B9B9B]">The holder keeps the credential details and verification link. A verifier can use the QR code or the original file to check the ledger record.</p>
       </div>
-
       {!credential ? (
         <div className="rounded-3xl border border-[#272727] bg-[#181818] p-8"><div className="flex items-center gap-3"><span className="flex h-10 w-10 items-center justify-center rounded-2xl bg-[#1F1F1F] text-[#2DD4BF]"><FileText size={20} /></span><div><h2 className="text-xl font-bold text-white">No credential yet</h2><p className="mt-1 text-sm text-[#9B9B9B]">Register a document first as an issuer.</p></div></div><Link href="/issuer" className="mt-6 inline-flex items-center gap-2 rounded-2xl bg-[#2DD4BF] px-4 py-3 text-base font-semibold text-black hover:bg-[#14B8A6] transition-fluid">Open issuer portal <ArrowRight size={18} /></Link></div>
       ) : (
@@ -51,7 +47,6 @@ export default function HolderPage() {
             </div>
             <div className="mt-6 flex flex-wrap gap-3"><Link href="/verify" className="inline-flex items-center gap-2 rounded-2xl bg-[#2DD4BF] px-4 py-3 text-sm font-semibold text-black hover:bg-[#14B8A6] transition-fluid">Open verifier <ArrowRight size={16} /></Link><Link href={credential.verificationPath} className="inline-flex items-center gap-2 rounded-2xl border border-[#313131] bg-[#272727] px-4 py-3 text-sm font-semibold text-white hover:bg-[#313131] transition-fluid">Open verification link</Link></div>
           </section>
-
           <aside className="rounded-3xl border border-[#272727] bg-[#181818] p-6 flex flex-col items-center text-center"><div className="mb-4 flex h-10 w-10 items-center justify-center rounded-2xl bg-[#1F1F1F] text-[#2DD4BF]"><QrCode size={20} /></div><h2 className="text-xl font-bold text-white">Verification QR</h2><p className="mt-2 text-sm leading-relaxed text-[#9B9B9B]">Scan this code to open the verifier for this credential.</p>{qrDataUrl ? <img src={qrDataUrl} alt="SecureChain verification QR" className="mt-6 rounded-2xl bg-white p-3" /> : <div className="mt-6 h-[220px] w-[220px] rounded-2xl bg-[#1F1F1F]" />}<p className="mt-4 break-all text-xs text-[#9B9B9B]">{credential.verificationPath}</p></aside>
         </div>
       )}
