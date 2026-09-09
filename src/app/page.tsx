@@ -19,17 +19,17 @@ import { FaqAccordion } from '@/components/FaqAccordion';
 
 export default function HomePage() {
   return (
-    <div className="flex flex-col w-full">
+    <div className="flex flex-col w-full overflow-x-hidden">
       {/* 1. HERO SECTION */}
-      <section className="relative pt-36 pb-20 md:pt-44 md:pb-28 px-6 flex flex-col items-center justify-center text-center">
+      <section className="relative pt-36 pb-20 md:pt-44 md:pb-28 px-4 sm:px-6 flex flex-col items-center justify-center text-center w-full max-w-full overflow-hidden">
         {/* Subtle Pill Badge */}
-        <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#181818] border border-[#272727] text-xs font-medium text-[#2DD4BF] mb-8">
-          <span className="w-2 h-2 rounded-full bg-[#2DD4BF] animate-pulse" />
-          <span>Smart India Hackathon 2026 · Team BlackCaps (TID146)</span>
+        <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#181818] border border-[#272727] text-xs font-medium text-[#2DD4BF] mb-8 max-w-full">
+          <span className="w-2 h-2 rounded-full bg-[#2DD4BF] animate-pulse shrink-0" />
+          <span className="truncate">Smart India Hackathon 2026 · Team BlackCaps (TID146)</span>
         </div>
 
         {/* Hero Heading: Max width 680px, Left to right #FFFFFF to #9B9B9B gradient text */}
-        <div className="max-w-[680px] mx-auto">
+        <div className="max-w-[680px] mx-auto w-full">
           <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold tracking-tight leading-[1.1] mb-6">
             <span className="hero-gradient-text block">
               Know a document is real,
@@ -40,7 +40,7 @@ export default function HomePage() {
           </h1>
 
           {/* Subheadline: Max width 680px, clean sentence wrap */}
-          <p className="text-base sm:text-lg md:text-xl text-[#9B9B9B] leading-relaxed mb-8">
+          <p className="text-base sm:text-lg md:text-xl text-[#9B9B9B] leading-relaxed mb-8 text-balance">
             SecureChain records a tamper proof fingerprint of every certificate, deed, or record the moment it is issued, so anyone can verify it in seconds instead of days.
           </p>
 
@@ -63,19 +63,22 @@ export default function HomePage() {
         </div>
 
         {/* Hero Visual: Interactive Live Ledger Preview Card */}
-        <div className="w-full max-w-3xl mt-14 mx-auto rounded-3xl border border-[#272727] bg-[#181818] p-6 shadow-2xl">
-          <div className="flex items-center justify-between border-b border-[#272727] pb-4 mb-5">
-            <div className="flex items-center gap-2">
-              <span className="w-3 h-3 rounded-full bg-[#272727]" />
-              <span className="w-3 h-3 rounded-full bg-[#272727]" />
-              <span className="w-3 h-3 rounded-full bg-[#272727]" />
-              <span className="text-xs text-[#9B9B9B] ml-2 font-mono">
+        <div className="w-full max-w-3xl mt-14 mx-auto rounded-3xl border border-[#272727] bg-[#181818] p-4 sm:p-6 shadow-2xl overflow-hidden">
+          <div className="flex items-center justify-between flex-wrap gap-2 border-b border-[#272727] pb-4 mb-5">
+            <div className="flex items-center gap-1.5 sm:gap-2 min-w-0">
+              <span className="w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full bg-[#272727] shrink-0" />
+              <span className="w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full bg-[#272727] shrink-0" />
+              <span className="w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full bg-[#272727] shrink-0" />
+              <span className="text-xs text-[#9B9B9B] ml-1 sm:ml-2 font-mono truncate hidden sm:inline">
                 node://fabric.ledger.securechain.org
               </span>
+              <span className="text-xs text-[#9B9B9B] ml-1 font-mono sm:hidden truncate">
+                node://securechain
+              </span>
             </div>
-            <div className="flex items-center gap-2">
-              <span className="text-xs px-2.5 py-1 rounded-full bg-[#1F1F1F] border border-[#272727] text-[#2DD4BF] font-mono">
-                PBFT Consensus Active
+            <div className="flex items-center gap-2 shrink-0">
+              <span className="text-[11px] sm:text-xs px-2.5 py-1 rounded-full bg-[#1F1F1F] border border-[#272727] text-[#2DD4BF] font-mono">
+                PBFT Active
               </span>
             </div>
           </div>
