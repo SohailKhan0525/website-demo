@@ -64,7 +64,7 @@ export function revokeLocalLedgerRecord(docHash: string, reason: string): Ledger
 export async function registerDocumentOnLedger(params: { doc_hash: string; doc_name: string; issuer: string; issued_on?: string }): Promise<LedgerRecord> {
   const issued_on = params.issued_on || new Date().toISOString().split('T')[0];
   const randomBlockNum = Math.floor(100000 + Math.random() * 900000);
-  const block_ref = `BLK-${randomBlockNum}-ETH`;
+  const block_ref = `BLK-${randomBlockNum}-DEMO`;
   const record: LedgerRecord = {
     id: typeof crypto !== 'undefined' && crypto.randomUUID ? crypto.randomUUID() : `doc-${Date.now()}`,
     doc_hash: params.doc_hash,
@@ -93,7 +93,9 @@ export async function verifyDocumentOnLedger(computedHash: string, isKnownTamper
   }
   const localRecords = getLocalLedgerRecords();
   const matchedLocal = localRecords.find((r) => r.doc_hash === computedHash);
-  if (matchedLocal) return { outcome: matchedLocal.status === 'revoked' ? 'revoked' : matchedLocal.status === 'tampered' ? 'tampered' : 'valid', computedHash, expectedHash: matchedLocal.doc_hash, record: matchedLocal, isOfflineFallback: false, timestamp: nowIso };
+  if (matchedLocal) {
+    return { outcome: matchedLocal.status === 'revoked' ? 'revoked' : matchedLocal.status === 'tampered' ? 'tampered' : 'valid', computedHash, expectedHash: matchedLocal.doc_hash, record: matchedLocal, isOfflineFallback: false, timestamp: nowIso };
+  }
   if (supabase && isBrowserOnline) {
     try {
       const timeoutPromise = new Promise<{ timeout: true }>((resolve) => setTimeout(() => resolve({ timeout: true }), 2500));
@@ -110,6 +112,8 @@ export async function verifyDocumentOnLedger(computedHash: string, isKnownTamper
     } catch {}
   }
   const matchedBaked = BAKED_LEDGER_ROWS.find((r) => r.doc_hash === computedHash);
-  if (matchedBaked) return { outcome: matchedBaked.status === 'revoked' ? 'revoked' : matchedBaked.status === 'tampered' ? 'tampered' : 'valid', computedHash, expectedHash: matchedBaked.doc_hash, record: matchedBaked, isOfflineFallback: true, timestamp: nowIso };
+  if (matchedBaked) {
+    return { outcome: matchedBaked.status === 'revoked' ? 'revoked' : matchedBaked.status === 'tampered' ? 'tampered' : 'valid', computedHash, expectedHash: matchedBaked.doc_hash, record: matchedBaked, isOfflineFallback: true, timestamp: nowIso };
+  }
   return { outcome: 'not_found', computedHash, isOfflineFallback: false, timestamp: nowIso };
 }
