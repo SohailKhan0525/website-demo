@@ -1,6 +1,6 @@
 # How to Show the SecureChain Demo to Judges (SIH 2026)
 **Live Site URL:** https://teamblackcaps.vercel.app  
-**Team ID:** TID146 | **Problem Statement:** SIH26194 | **Team Name:** BlackCaps
+**Team ID:** TID151 | **Problem Statement:** SIH26194 | **Team Name:** BlackCaps
 
 ---
 
@@ -8,7 +8,7 @@
 
 ### Step 1: Open the Homepage (30 seconds)
 1. Open `https://teamblackcaps.vercel.app` on laptop (or hand your phone to the judge).
-2. Point to the header badge: `Smart India Hackathon 2026 · Team BlackCaps (TID146)`.
+2. Point to the header badge: `Smart India Hackathon 2026 · Team BlackCaps (TID151)`.
 3. Say this exact line:
    > *"Respected judges, colleges and land offices still verify papers using manual phone calls and physical letters, which takes 2 to 3 weeks and is easy to forge. SecureChain seals an immutable cryptographic fingerprint on a distributed ledger at the moment a document is issued, dropping verification time to 400 milliseconds."*
 4. Click **"Launch Demo"** (or **"Try the live verification demo"**).
@@ -54,7 +54,7 @@
 
 ### Step 5: Show Team Page (10 seconds)
 1. Click **"Team BlackCaps"** in the navbar:
-2. Shows all 6 members with verified roles and male/female icons (Akshya has the female icon).
+2. Shows all 6 members with verified roles and male/female icons (Burru Akshaya has the female icon).
 
 ---
 
