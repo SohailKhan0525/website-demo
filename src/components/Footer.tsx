@@ -19,7 +19,7 @@ export function Footer() {
           </p>
           <div className="flex items-center gap-2 mt-1">
             <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-[#1F1F1F] text-[#9B9B9B] border border-[#272727]">
-              Team BlackCaps · TID146
+              Team BlackCaps · TID151
             </span>
             <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-[#1F1F1F] text-[#9B9B9B] border border-[#272727]">
               Problem Statement SIH26194
