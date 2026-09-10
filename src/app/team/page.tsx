@@ -21,7 +21,7 @@ const MEMBERS: Member[] = [
     isFemale: false,
   },
   {
-    name: 'Aith Sai Teja',
+    name: 'Aitha Saiteja',
     role: 'Member',
     isFemale: false,
   },
@@ -36,7 +36,7 @@ const MEMBERS: Member[] = [
     isFemale: false,
   },
   {
-    name: 'Akshya',
+    name: 'Burru Akshaya',
     role: 'Member',
     isFemale: true,
   },
@@ -54,7 +54,7 @@ export default function TeamPage() {
       <div className="text-center max-w-2xl mx-auto mb-14">
         <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#181818] border border-[#272727] text-xs font-mono text-[#2DD4BF] mb-4">
           <span className="w-2 h-2 rounded-full bg-[#2DD4BF] animate-pulse" />
-          <span>Team BlackCaps · TID146</span>
+          <span>Team BlackCaps · TID151</span>
         </div>
         <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight text-white mb-4">
           Team BlackCaps
