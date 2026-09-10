@@ -1,7 +1,7 @@
 # SecureChain — Team Guide for Tomorrow
 
 **Team:** BlackCaps  
-**Team ID:** TID146  
+**Team ID:** TID151  
 **Problem Statement:** SIH26194  
 **Project:** SecureChain — Blockchain-Based Digital Document Verification Platform
 
@@ -304,7 +304,7 @@ Remember:
 - Blockchain & Cybersecurity
 - SecureChain
 - Team BlackCaps
-- TID146
+- TID151
 
 Simple explanation:
 > Our project is SecureChain, a blockchain-based digital document verification platform.
@@ -349,7 +349,7 @@ If asked:
 ### Saidev
 Opening, problem, project introduction, and closing.
 
-### Sai Teja
+### Aitha Saiteja
 Explain the proposed solution and the three roles.
 
 ### Praveen
@@ -358,7 +358,7 @@ Explain the basic working flow.
 ### Radheshyam
 Explain the technical approach and technologies.
 
-### Akshya
+### Burru Akshaya
 Explain impact and benefits.
 
 ### Sohail
