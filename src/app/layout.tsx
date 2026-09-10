@@ -24,7 +24,7 @@ export const metadata: Metadata = {
     'Hyperledger Fabric',
     'Digital Credentials',
   ],
-  authors: [{ name: 'Team BlackCaps (TID146)' }],
+  authors: [{ name: 'Team BlackCaps (TID151)' }],
   openGraph: {
     title: 'SecureChain | Blockchain Document Verification Platform',
     description:
