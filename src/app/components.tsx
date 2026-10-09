@@ -7,7 +7,7 @@ import {
   ArrowDown, ArrowLeft, ArrowRight, ArrowUpRight, Check, ChevronRight, Code2,
   Copy, Github, Layers3, Moon, Search, SlidersHorizontal, Sparkles, Sun, Terminal, X, Zap
 } from "lucide-react";
-import { animations, categories, type Animation, type AnimationCategory } from "./animations";
+import { animations, categories, type Animation } from "./animations";
 import { MiniArtwork, PreviewFrame } from "./preview";
 
 type Theme = "dark" | "light";

@@ -44,7 +44,7 @@ function SceneGraphic({ kind }: { kind: string }) {
     );
   }
 
-  if (kind === "particles" || kind === "liquid" || kind === "gooey" || kind === "morph" || kind === "glass" || kind === "glow" || kind === "reflection" || kind === "gradient" || kind === "chromatic") {
+  if (kind === "light" || kind === "particles" || kind === "liquid" || kind === "gooey" || kind === "morph" || kind === "glass" || kind === "glow" || kind === "reflection" || kind === "gradient" || kind === "chromatic") {
     return (
       <div className={"scene-object scene-object--" + kind}>
         <div className="object-halo" />
