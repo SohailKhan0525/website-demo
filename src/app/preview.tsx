@@ -250,7 +250,8 @@ function ProductScene({ kind, replay, slug }: { kind: string; replay: number; sl
 
 function AnimationStage({ animation, replay }: { animation: Animation; replay: number }) {
   const { kind, slug } = animation;
-  if (kind === "portal") return <PortalScene replay={replay}/>;\n  if (["drag","tilt","magnetic","nav","flip","expand","shared","spring"].includes(kind)) return <InteractiveScene kind={kind} replay={replay}/>;
+  if (kind === "portal") return <PortalScene replay={replay}/>;
+  if (["drag","tilt","magnetic","nav","flip","expand","shared","spring"].includes(kind)) return <InteractiveScene kind={kind} replay={replay}/>;
   if (["timeline","pin","horizontal","mask","parallax"].includes(kind) || ["scroll-driven-camera-flight","scroll-linked-type-deformation","scroll-synchronized-data","narrative-state-transformation","continuous-section-morphing"].includes(slug)) return <ScrollScene kind={kind==="dolly"?"timeline":kind} replay={replay} slug={slug}/>;
   if (["kinetic","tokens","trace"].includes(kind)) return <TypeScene kind={kind} replay={replay}/>;
   if (["graph","wireframe","stream","particles"].includes(kind) || slug === "autonomous-agent-orchestration") return <NetworkScene kind={kind} replay={replay} slug={slug}/>;
