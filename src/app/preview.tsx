@@ -65,8 +65,36 @@ export function MiniArtwork({ animation }: { animation: Animation }) {
 export function PreviewFrame({ animation }: { animation: Animation }) {
   const [previewTheme, setPreviewTheme] = useState<"dark" | "light">("dark");
   const [replayKey, setReplayKey] = useState(0);
-  return <section className={"preview-frame preview-frame--" + animation.size} data-preview-theme={previewTheme}>
-    <div className="preview-toolbar"><div className="preview-toolbar-label"><span className="preview-live-dot" /> LIVE PREVIEW <span>/</span> {animation.size.toUpperCase()} CANVAS</div><div className="preview-toolbar-actions"><button className="preview-tool" type="button" aria-label="Replay animation" onClick={() => setReplayKey((n) => n + 1)} title="Replay"><RotateCcw size={14} /></button><button className="preview-tool" type="button" aria-label={"Switch preview to " + (previewTheme === "dark" ? "light" : "dark")} onClick={() => setPreviewTheme((t) => t === "dark" ? "light" : "dark")} title="Toggle preview theme">{previewTheme === "dark" ? <Sun size={14} /> : <Moon size={14} /></button></div></div>
-    <div className="preview-canvas"><div className="preview-grid" /><Shape kind={animation.kind} replay={replayKey} /><div className="preview-caption"><span>{animation.name}</span><span>CONTAINED CANVAS</span></div></div>
-  </section>;
+
+  return (
+    <section className={"preview-frame preview-frame--" + animation.size} data-preview-theme={previewTheme}>
+      <div className="preview-toolbar">
+        <div className="preview-toolbar-label">
+          <span className="preview-live-dot" /> LIVE PREVIEW <span>/</span> {animation.size.toUpperCase()} CANVAS
+        </div>
+        <div className="preview-toolbar-actions">
+          <button className="preview-tool" type="button" aria-label="Replay animation" onClick={() => setReplayKey((n) => n + 1)} title="Replay">
+            <RotateCcw size={14} />
+          </button>
+          <button
+            className="preview-tool"
+            type="button"
+            aria-label={"Switch preview to " + (previewTheme === "dark" ? "light" : "dark")}
+            onClick={() => setPreviewTheme((t) => (t === "dark" ? "light" : "dark"))}
+            title="Toggle preview theme"
+          >
+            {previewTheme === "dark" ? <Sun size={14} /> : <Moon size={14} />}
+          </button>
+        </div>
+      </div>
+      <div className="preview-canvas">
+        <div className="preview-grid" />
+        <Shape kind={animation.kind} replay={replayKey} />
+        <div className="preview-caption">
+          <span>{animation.name}</span>
+          <span>CONTAINED CANVAS</span>
+        </div>
+      </div>
+    </section>
+  );
 }
