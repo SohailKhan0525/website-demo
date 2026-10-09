@@ -121,7 +121,7 @@ function ScrollScene({ kind, replay, slug }: { kind: string; replay: number; slu
     <div className="scroll-progress"><motion.i animate={{scaleX:progress}} style={{transformOrigin:"left"}} transition={{duration:reduce?0:.12}}/></div>
     <div className="scroll-viewport" ref={verticalRef} onScroll={onScroll} tabIndex={0} aria-label="Scroll inside the preview to scrub the scene">
       <div className={"scroll-content"+(isHorizontal?" scroll-content--horizontal":"")}>
-        {isHorizontal ? <motion.div className="horizontal-track" animate={{x:-progress*230}} transition={{duration:reduce?0:.15,ease:"linear"}}>{["Discover","Design","Deliver"].map((t,i)=><div className={"horizontal-panel horizontal-panel--"+i} key={t}><span>0{i+1} / FIELD NOTE</span><strong>{t}<br/><em>with intent.</em></strong><i>{["↗","✳","→"][i]}</i></div>)}</motion.div>
+        {isHorizontal ? <motion.div className="horizontal-track" animate={{x:-progress*440}} transition={{duration:reduce?0:.15,ease:"linear"}}>{["Discover","Design","Deliver"].map((t,i)=><div className={"horizontal-panel horizontal-panel--"+i} key={t}><span>0{i+1} / FIELD NOTE</span><strong>{t}<br/><em>with intent.</em></strong><i>{["↗","✳","→"][i]}</i></div>)}</motion.div>
         : isScrollChart ? <div className="scroll-chart-story"><div className="scroll-chart-sticky">
           <div className="scroll-chart-title">Signals through the week <span>SCROLL / LIVE</span></div>
           <div className="scroll-bars">{[38,66,48,78,55,94,70,84,61,97,76,88].map((height,i)=><motion.i key={i} style={{height:height+"%"}} animate={{scaleY:Math.min(1,.25+progress*1.2+(i%3)*.09)}} transition={{duration:reduce?0:.12,ease:"linear"}} />)}</div>
@@ -182,6 +182,22 @@ function InteractiveScene({ kind, replay }: { kind: string; replay: number }) {
   </div>;
 }
 
+function PortalScene({ replay }: { replay: number }) {
+  const reduce = Boolean(useReducedMotion());
+  const [open,setOpen]=useState(false);
+  return <div className="motion-scene portal-scene" key={replay}>
+    <div className="visual-head"><SceneLabel>PORTAL REVEAL</SceneLabel><span>CLIP PATH / RADIAL</span></div>
+    <div className="portal-stage">
+      <div className="portal-underlay"><span>THE NEXT CHAPTER</span><strong>Make room<br/>for what’s next.</strong><small>A transition with a clear focal point.</small><div className="portal-underlay-mark">↗</div></div>
+      <motion.div className="portal-mask" initial={reduce?false:{clipPath:"circle(0% at 50% 50%)"}} animate={reduce?{clipPath:"circle(100% at 50% 50%)"}:{clipPath:open?"circle(0% at 50% 50%)":"circle(100% at 50% 50%)"}} transition={{duration:reduce?0:.85,ease:[.76,0,.24,1]}}>
+        <div className="portal-mask-content"><span>NEW SPACE / 02</span><motion.div className="portal-ring" animate={reduce?undefined:{rotate:[0,90,180],scale:[1,.93,1]}} transition={{duration:8,repeat:Infinity,ease:"linear"}}><i/><i/><i/></motion.div><strong>Start<br/><em>somewhere.</em></strong><small>The shape becomes the doorway.</small></div>
+      </motion.div>
+      <button className="portal-toggle" type="button" onClick={()=>setOpen(v=>!v)}>{open?"Close portal":"Replay reveal"} <ArrowRight size={12}/></button>
+    </div>
+    <div className="visual-foot"><span>RADIAL MASK · FOCAL REVEAL</span><span><i/> INTERACTIVE</span></div>
+  </div>;
+}
+
 function VisualScene({ kind, replay }: { kind: string; replay: number }) {
   const reduce = Boolean(useReducedMotion());
   const effect = surfaceMotion[kind] || surfaceMotion.morph;
@@ -234,7 +250,7 @@ function ProductScene({ kind, replay, slug }: { kind: string; replay: number; sl
 
 function AnimationStage({ animation, replay }: { animation: Animation; replay: number }) {
   const { kind, slug } = animation;
-  if (["drag","tilt","magnetic","nav","flip","expand","shared","spring"].includes(kind)) return <InteractiveScene kind={kind} replay={replay}/>;
+  if (kind === "portal") return <PortalScene replay={replay}/>;\n  if (["drag","tilt","magnetic","nav","flip","expand","shared","spring"].includes(kind)) return <InteractiveScene kind={kind} replay={replay}/>;
   if (["timeline","pin","horizontal","mask","parallax"].includes(kind) || ["scroll-driven-camera-flight","scroll-linked-type-deformation","scroll-synchronized-data","narrative-state-transformation","continuous-section-morphing"].includes(slug)) return <ScrollScene kind={kind==="dolly"?"timeline":kind} replay={replay} slug={slug}/>;
   if (["kinetic","tokens","trace"].includes(kind)) return <TypeScene kind={kind} replay={replay}/>;
   if (["graph","wireframe","stream","particles"].includes(kind) || slug === "autonomous-agent-orchestration") return <NetworkScene kind={kind} replay={replay} slug={slug}/>;
