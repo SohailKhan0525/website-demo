@@ -1,36 +1,35 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Motion Foundry
 
-## Getting Started
+A premium, open-source gallery of motion patterns for React and Next.js. Explore 50 effects, preview them in a contained stage, switch between light and dark preview surfaces, and copy a React starter, CSS accent, or install command.
 
-First, run the development server:
+## Features
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+- 50 searchable animation studies organized by category
+- Detail pages with medium and large contained live previews
+- Global light and dark theme plus an independent preview theme
+- Copyable React, CSS, and install snippets
+- Responsive layout, reduced-motion support, and accessible controls
+- Next.js App Router, TypeScript, Motion for React, and custom CSS
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Run locally
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+1. Install Node.js 20 or newer.
+2. Install packages with npm install.
+3. Start the dev server with npm run dev.
+4. Open http://localhost:3000.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Deploy
 
-## Learn More
+Import this repository into Vercel. The framework is detected as Next.js automatically. No environment variables are required.
 
-To learn more about Next.js, take a look at the following resources:
+## Copy snippets
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Open an animation, choose Component, CSS, or Install in the implementation panel, and use Copy. The React starter is built with Motion for React using the motion package. Some advanced ideas—such as shader distortion and spatial scenes—are represented as lightweight, browser-friendly starter treatments; use a WebGL renderer when you need physically accurate 3D or custom shaders.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Contributing
 
-## Deploy on Vercel
+Add new entries to src/app/animations.ts, add or refine the matching visual treatment in src/app/globals.css, and add a focused code recipe in src/app/components.tsx. Keep previews contained, avoid expensive always-running effects in the gallery grid, and respect reduced-motion preferences.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## License
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+MIT. See LICENSE.

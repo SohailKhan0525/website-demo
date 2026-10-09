@@ -1,18 +1,38 @@
-import type { Metadata } from 'next';
-import { Geist, Playfair_Display } from 'next/font/google';
-import './globals.css';
-
-const geist = Geist({ variable: '--font-geist', subsets: ['latin'], display: 'swap' });
-const playfair = Playfair_Display({ variable: '--font-playfair', subsets: ['latin'], display: 'swap', style: ['normal', 'italic'] });
+import type { Metadata, Viewport } from "next";
+import "./globals.css";
 
 export const metadata: Metadata = {
-  title: 'FORMA — Architecture, Interiors & Direction',
-  description: 'FORMA is an independent architecture studio creating quiet, enduring spaces across residential, hospitality and cultural work.',
-  keywords: ['architecture studio', 'interior design', 'FORMA', 'architecture portfolio'],
-  authors: [{ name: 'FORMA Studio' }],
-  openGraph: { title: 'FORMA — Architecture, Interiors & Direction', description: 'Spaces that stay with you.', type: 'website' },
+  title: {
+    default: "Motion Foundry — Premium motion for the web",
+    template: "%s — Motion Foundry",
+  },
+  description:
+    "A carefully crafted library of 50 premium animation patterns for Next.js and React. Preview, inspect, and copy the motion you need.",
+  applicationName: "Motion Foundry",
+  keywords: [
+    "Next.js animations",
+    "React motion",
+    "copy paste components",
+    "GSAP inspiration",
+    "motion design",
+    "open source UI",
+  ],
+  openGraph: {
+    title: "Motion Foundry",
+    description: "50 premium motion patterns. Preview them. Copy them. Make them yours.",
+    type: "website",
+  },
+};
+
+export const viewport: Viewport = {
+  themeColor: "#0b0b0d",
+  colorScheme: "dark light",
 };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
-  return <html lang="en" className={`${geist.variable} ${playfair.variable}`}><body className="antialiased">{children}</body></html>;
+  return (
+    <html lang="en" suppressHydrationWarning>
+      <body>{children}</body>
+    </html>
+  );
 }
