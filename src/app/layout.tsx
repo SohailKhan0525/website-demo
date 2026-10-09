@@ -2,37 +2,21 @@ import type { Metadata, Viewport } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: {
-    default: "Motion Foundry — Premium motion for the web",
-    template: "%s — Motion Foundry",
-  },
-  description:
-    "A carefully crafted library of 50 premium animation patterns for Next.js and React. Preview, inspect, and copy the motion you need.",
-  applicationName: "Motion Foundry",
-  keywords: [
-    "Next.js animations",
-    "React motion",
-    "copy paste components",
-    "GSAP inspiration",
-    "motion design",
-    "open source UI",
-  ],
+  title: { default: "Motion Shelf — an independent motion library", template: "%s — Motion Shelf" },
+  description: "A growing, open-source collection of copyable motion studies for React and the web. Preview each effect, inspect the code, and adapt it to your project.",
+  applicationName: "Motion Shelf",
+  keywords: ["CSS animation", "React motion", "copy paste animation", "open source motion library", "web animation"],
+  authors: [{ name: "Sohail Khan", url: "https://github.com/SohailKhan0525" }],
+  creator: "Sohail Khan",
   openGraph: {
-    title: "Motion Foundry",
-    description: "50 premium motion patterns. Preview them. Copy them. Make them yours.",
+    title: "Motion Shelf",
+    description: "A small, independent motion library. Preview the effect, inspect the code, make it your own.",
     type: "website",
   },
 };
 
-export const viewport: Viewport = {
-  themeColor: "#0b0b0d",
-  colorScheme: "dark light",
-};
+export const viewport: Viewport = { themeColor: "#f4f2ec", colorScheme: "light dark" };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
-  return (
-    <html lang="en" suppressHydrationWarning>
-      <body>{children}</body>
-    </html>
-  );
+  return <html lang="en" suppressHydrationWarning><body>{children}</body></html>;
 }

@@ -2,236 +2,141 @@
 
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
-import { AnimatePresence, motion } from "motion/react";
-import {
-  ArrowDown, ArrowLeft, ArrowRight, ArrowUpRight, Check, ChevronRight, Code2,
-  Copy, Github, Layers3, Moon, Search, SlidersHorizontal, Sparkles, Sun, Terminal, X, Zap
-} from "lucide-react";
+import { AnimatePresence, motion, useReducedMotion } from "motion/react";
+import { ArrowDown, ArrowLeft, ArrowRight, ArrowUpRight, Check, ChevronRight, Code2, Copy, Github, Moon, Search, Sun, X } from "lucide-react";
 import { animations, categories, type Animation } from "./animations";
 import { MiniArtwork, PreviewFrame } from "./preview";
 
-type Theme = "dark" | "light";
-type CodeTab = "Component" | "CSS" | "Install";
+type Theme = "light" | "dark";
+type CodeTab = "Component" | "CSS" | "Setup";
 
 function useSiteTheme() {
-  const [theme, setTheme] = useState<Theme>("dark");
-
+  const [theme, setTheme] = useState<Theme>("light");
   useEffect(() => {
-    const stored = window.localStorage.getItem("motion-foundry-theme");
+    const stored = window.localStorage.getItem("motion-shelf-theme");
     if (stored === "light" || stored === "dark") setTheme(stored);
   }, []);
-
   useEffect(() => {
     document.documentElement.dataset.theme = theme;
-    window.localStorage.setItem("motion-foundry-theme", theme);
+    window.localStorage.setItem("motion-shelf-theme", theme);
   }, [theme]);
-
   return { theme, setTheme };
 }
 
-function SiteHeader({ theme, setTheme, detail = false }: { theme: Theme; setTheme: (theme: Theme) => void; detail?: boolean }) {
-  return (
-    <header className="site-header">
-      <div className="header-inner">
-        <Link href="/" className="brand-lockup" aria-label="Motion Foundry home">
-          <span className="brand-mark"><Sparkles size={17} strokeWidth={1.8} /></span>
-          <span className="brand-wordmark">motion<span>foundry</span></span>
-          <span className="brand-version">BETA</span>
-        </Link>
-        <nav className="header-nav" aria-label="Main navigation">
-          {detail ? <Link href="/#library" className="nav-link"><ArrowLeft size={14} /> All animations</Link> : <a href="#library" className="nav-link">Library <span className="nav-count">50</span></a>}
-          <a href="https://github.com/SohailKhan0525/website-demo" className="nav-link nav-github" target="_blank" rel="noreferrer"><Github size={14} /> GitHub <ArrowUpRight size={12} /></a>
-        </nav>
-        <div className="header-actions">
-          <span className="header-open-source"><span /> OPEN SOURCE</span>
-          <button className="icon-button theme-button" aria-label={"Switch site to " + (theme === "dark" ? "light" : "dark") + " mode"} title="Toggle theme" onClick={() => setTheme(theme === "dark" ? "light" : "dark")}>
-            {theme === "dark" ? <Sun size={16} /> : <Moon size={16} />}
-          </button>
-        </div>
-      </div>
-    </header>
-  );
+function ThemeButton({ theme, setTheme }: { theme: Theme; setTheme: (theme: Theme) => void }) {
+  return <button className="theme-toggle" type="button" aria-label={"Switch to " + (theme === "light" ? "dark" : "light") + " theme"} onClick={() => setTheme(theme === "light" ? "dark" : "light")}>{theme === "light" ? <Moon size={15} /> : <Sun size={15} />}<span>{theme === "light" ? "Dark" : "Light"}</span></button>;
 }
 
-function HeroArtwork() {
-  return (
-    <div className="hero-artwork" aria-hidden="true">
-      <div className="hero-art-grid" />
-      <div className="hero-art-orbit hero-art-orbit--one" />
-      <div className="hero-art-orbit hero-art-orbit--two" />
-      <motion.div className="hero-art-card hero-art-card--back" animate={{ y: [0, -9, 0], rotate: [-9, -7, -9] }} transition={{ duration: 7, repeat: Infinity, ease: "easeInOut" }}>
-        <div className="hero-card-top"><i /><i /><i /><span>TRACE / 004</span></div>
-        <div className="hero-card-skeleton"><i /><i /><i /></div>
-        <div className="hero-card-mini-chart"><span /><span /><span /><span /><span /><span /><span /><span /></div>
-      </motion.div>
-      <motion.div className="hero-art-card hero-art-card--main" animate={{ y: [0, 7, 0], rotate: [4, 2.5, 4] }} transition={{ duration: 6, repeat: Infinity, ease: "easeInOut", delay: 0.4 }}>
-        <div className="hero-card-top"><span className="hero-product-icon"><Sparkles size={11} /></span><span>ORBIT / STUDIO</span><span className="hero-live">LIVE</span></div>
-        <div className="hero-card-heading">Motion runtime <span>↗</span></div>
-        <div className="hero-card-subtitle">Signals, synchronized.</div>
-        <div className="hero-card-graph"><svg viewBox="0 0 330 105" preserveAspectRatio="none"><defs><linearGradient id="heroLine" x1="0" x2="1"><stop offset="0%" stopColor="#8075ff" /><stop offset="100%" stopColor="#b8f5df" /></linearGradient></defs><path d="M0 82 C22 78 25 57 45 64 S75 87 94 52 S125 62 144 43 S172 56 193 26 S226 52 244 36 S275 15 292 29 S314 11 330 6" stroke="url(#heroLine)" strokeWidth="2.3" fill="none" /></svg></div>
-        <div className="hero-card-bottom"><span><i /> 42 transitions</span><span>+18.6%</span></div>
-      </motion.div>
-      <motion.div className="hero-art-toast" animate={{ x: [0, 4, 0], y: [0, -4, 0] }} transition={{ duration: 5.4, repeat: Infinity, ease: "easeInOut" }}>
-        <span className="toast-check"><Check size={13} /></span><span><b>Sequence complete</b><small>All 8 elements synchronized</small></span><span className="toast-time">now</span>
-      </motion.div>
-      <div className="hero-art-label hero-art-label--top"><span className="label-line" /> SPRING / 0.82</div>
-      <div className="hero-art-label hero-art-label--bottom">01 — 50 <span>LIVE STUDIES</span></div>
-    </div>
-  );
+function Header({ theme, setTheme, detail = false }: { theme: Theme; setTheme: (theme: Theme) => void; detail?: boolean }) {
+  return <header className="site-header"><div className="header-inner">
+    <Link href="/" className="wordmark" aria-label="Motion Shelf home"><span className="wordmark-symbol">m<span>.</span></span><span>motion shelf</span></Link>
+    <nav className="header-nav" aria-label="Main navigation">
+      {detail ? <Link href="/#library" className="header-link"><ArrowLeft size={14} /> Browse library</Link> : <a href="#library" className="header-link">Library <span className="header-count">{animations.length}</span></a>}
+      <a href="https://github.com/SohailKhan0525/website-demo" target="_blank" rel="noreferrer" className="header-link">Source <ArrowUpRight size={13} /></a>
+    </nav>
+    <ThemeButton theme={theme} setTheme={setTheme} />
+  </div></header>;
 }
 
-function CategoryIcon({ category }: { category: string }) {
-  const icon = category === "Hero" ? <Sparkles size={12} /> : category === "Scroll" ? <ArrowDown size={12} /> : category === "Interaction" ? <Zap size={12} /> : category === "Visual" ? <Layers3 size={12} /> : <Code2 size={12} />;
-  return <span className="category-icon">{icon}</span>;
+function AuthorNote({ compact = false }: { compact?: boolean }) {
+  return <div className={"author-note" + (compact ? " author-note--compact" : "")}>
+    <span className="author-avatar">SK</span>
+    <span className="author-copy"><strong>Made by Sohail Khan</strong><small>One-person project · built with AI assistance from ChatGPT</small></span>
+    <a href="https://github.com/SohailKhan0525" target="_blank" rel="noreferrer" aria-label="Sohail Khan on GitHub"><ArrowUpRight size={14} /></a>
+  </div>;
+}
+
+function Eyebrow({ children }: { children: React.ReactNode }) {
+  return <div className="eyebrow"><span className="eyebrow-dot" />{children}</div>;
 }
 
 function AnimationCard({ animation, index }: { animation: Animation; index: number }) {
-  return (
-    <motion.article
-      className="animation-card"
-      initial={{ opacity: 0, y: 18 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, amount: 0.18 }}
-      transition={{ duration: 0.48, delay: (index % 6) * 0.035, ease: [0.22, 1, 0.36, 1] }}
-      whileHover={{ y: -5, transition: { duration: 0.22 } }}
-    >
-      <Link href={"/" + animation.slug} className="animation-card-link" aria-label={"Preview " + animation.name}>
-        <div className="animation-card-topline"><span className="card-number">{String(index + 1).padStart(2, "0")}</span><span className="card-category"><CategoryIcon category={animation.category} />{animation.category}</span><span className="card-arrow"><ArrowUpRight size={15} /></span></div>
-        <MiniArtwork animation={animation} />
-        <div className="animation-card-info">
-          <div className="animation-card-title-row"><h3>{animation.name}</h3><span className="card-level">{animation.level === "Expert" ? "EXP" : "ADV"}</span></div>
-          <p>{animation.description}</p>
-          <div className="animation-card-bottom"><span className="card-library"><i />{animation.library}</span><span className="card-open">Explore <ChevronRight size={13} /></span></div>
-        </div>
-      </Link>
-    </motion.article>
-  );
+  const reduced = useReducedMotion();
+  return <motion.article className="animation-card" layout initial={reduced ? false : { opacity: 0, y: 12 }} whileInView={reduced ? undefined : { opacity: 1, y: 0 }} viewport={{ once: true, amount: 0.15 }} transition={{ duration: 0.42, delay: (index % 3) * 0.035, ease: [0.22, 1, 0.36, 1] }} whileHover={reduced ? undefined : { y: -3 }} >
+    <Link href={"/" + animation.slug} className="animation-card-link" aria-label={"Open " + animation.name}>
+      <div className="animation-card-meta"><span>{String(index + 1).padStart(2, "0")}</span><span>{animation.category}</span><ArrowUpRight size={14} /></div>
+      <MiniArtwork animation={animation} />
+      <div className="animation-card-copy"><h3>{animation.name}</h3><p>{animation.description}</p>
+        <div className="animation-card-foot"><span>Code included</span><span>View study <ChevronRight size={13} /></span></div>
+      </div>
+    </Link>
+  </motion.article>;
 }
 
 export function HomePage() {
   const { theme, setTheme } = useSiteTheme();
   const [query, setQuery] = useState("");
   const [category, setCategory] = useState<(typeof categories)[number]>("All");
-  const [showFilters, setShowFilters] = useState(false);
-
+  const reduced = useReducedMotion();
   const filtered = useMemo(() => {
-    const normalized = query.trim().toLowerCase();
-    return animations.filter((animation) => {
-      const matchesCategory = category === "All" || animation.category === category;
-      const searchable = [animation.name, animation.description, animation.category, ...animation.tags].join(" ").toLowerCase();
-      return matchesCategory && (!normalized || searchable.includes(normalized));
-    });
+    const q = query.trim().toLowerCase();
+    return animations.filter((animation) => (category === "All" || animation.category === category) && (!q || [animation.name, animation.description, animation.category, ...animation.tags].join(" ").toLowerCase().includes(q)));
   }, [query, category]);
 
-  return (
-    <div className="app-shell" data-theme={theme}>
-      <SiteHeader theme={theme} setTheme={setTheme} />
-      <main>
-        <section className="hero-section">
-          <div className="hero-copy">
-            <motion.div className="eyebrow" initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}><span className="eyebrow-spark"><Sparkles size={12} /></span> THE MOTION COMPONENT LIBRARY <span className="eyebrow-divider" /> BUILT FOR REACT</motion.div>
-            <motion.h1 initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.78, delay: 0.08, ease: [0.22, 1, 0.36, 1] }}>Make your interface<br />feel <span className="hero-title-gradient">alive.</span></motion.h1>
-            <motion.p className="hero-description" initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.65, delay: 0.2 }}>A curated collection of premium motion patterns for ambitious products. Explore the effect, inspect the code, and copy it into your next build.</motion.p>
-            <motion.div className="hero-actions" initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.65, delay: 0.3 }}>
-              <a className="button button-primary" href="#library">Explore the library <ArrowDown size={15} /></a>
-              <a className="button button-quiet" href="https://github.com/SohailKhan0525/website-demo" target="_blank" rel="noreferrer"><Github size={15} /> View source <ArrowUpRight size={14} /></a>
-            </motion.div>
-            <motion.div className="hero-proof" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.5 }}>
-              <div className="avatar-stack"><span>m</span><span>✳</span><span>∞</span><span>⌘</span></div>
-              <p><b>50 motion studies</b><span>Open source · Copy-paste ready</span></p>
-            </motion.div>
-          </div>
-          <HeroArtwork />
-          <div className="hero-bottom-meta"><span><span className="live-indicator" /> MOTION / SYSTEM 001</span><span>AN OPEN LIBRARY FOR THE DETAILS THAT MATTER <ArrowDown size={13} /></span></div>
-        </section>
+  useEffect(() => {
+    function onKeyDown(event: KeyboardEvent) {
+      if (event.key === "/" && !(event.target instanceof HTMLInputElement) && !(event.target instanceof HTMLTextAreaElement)) {
+        event.preventDefault();
+        document.getElementById("animation-search")?.focus();
+      }
+      if (event.key === "Escape") {
+        setQuery("");
+        (document.activeElement as HTMLElement | null)?.blur?.();
+      }
+    }
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, []);
 
-        <section id="library" className="library-section">
-          <div className="section-heading">
-            <div><div className="section-eyebrow"><span>01</span> THE COLLECTION</div><h2>Find your next <span>signature move.</span></h2><p>Fifty thoughtfully crafted motion ideas. Each one has a live preview and copyable starter code.</p></div>
-            <div className="section-total"><strong>050</strong><span>ANIMATIONS</span></div>
+  return <div className="app-shell" data-theme={theme}>
+    <Header theme={theme} setTheme={setTheme} />
+    <main>
+      <section className="hero">
+        <div className="hero-content">
+          <motion.div initial={reduced ? false : { opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: .45 }}><Eyebrow>AN INDEPENDENT MOTION LIBRARY</Eyebrow></motion.div>
+          <motion.h1 initial={reduced ? false : { opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: .65, delay: .04, ease: [0.22, 1, 0.36, 1] }}>Good interfaces<br />have <em>good timing.</em></motion.h1>
+          <motion.p className="hero-description" initial={reduced ? false : { opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: .5, delay: .12 }}>A growing shelf of motion studies for the web. See the effect, read the implementation, and take the code into your own project.</motion.p>
+          <motion.div className="hero-actions" initial={reduced ? false : { opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: .5, delay: .18 }}>
+            <a href="#library" className="button button-primary">Explore the library <ArrowDown size={15} /></a>
+            <a href="https://github.com/SohailKhan0525/website-demo" target="_blank" rel="noreferrer" className="button button-secondary"><Github size={15} /> View source</a>
+          </motion.div>
+          <div className="hero-principles"><span><i /> Copyable code</span><span><i /> Contained previews</span><span><i /> Open source</span></div>
+        </div>
+        <motion.div className="hero-demo" initial={reduced ? false : { opacity: 0, scale: .985, y: 12 }} animate={{ opacity: 1, scale: 1, y: 0 }} transition={{ duration: .7, delay: .08, ease: [0.22, 1, 0.36, 1] }}>
+          <div className="hero-demo-bar"><span><i /><i /><i /></span><span>LIVE STUDY / 001</span><span>CSS + MOTION</span></div>
+          <div className="hero-demo-stage">
+            <div className="demo-orbit demo-orbit-one" /><div className="demo-orbit demo-orbit-two" />
+            <motion.div className="demo-object" animate={reduced ? undefined : { y: [0, -8, 0], rotate: [-4, 1, -4], borderRadius: ["28% 72% 61% 39%", "55% 45% 38% 62%", "28% 72% 61% 39%"] }} transition={{ duration: 7, repeat: Infinity, ease: "easeInOut" }}><span /></motion.div>
+            <motion.div className="demo-label demo-label--left" animate={reduced ? undefined : { y: [0, 4, 0] }} transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}><span>01</span> Shape morph</motion.div>
+            <motion.div className="demo-label demo-label--right" animate={reduced ? undefined : { y: [0, -4, 0] }} transition={{ duration: 4.5, repeat: Infinity, ease: "easeInOut" }}><span>02</span> Spring settle</motion.div>
+            <div className="demo-stage-index">A SMALL MOTION STUDY <span>↗</span></div>
           </div>
-          <div className="library-controls">
-            <div className="category-tabs" role="group" aria-label="Filter animations by category">
-              {categories.map((item) => <button key={item} className={"category-tab" + (category === item ? " is-active" : "")} onClick={() => setCategory(item)}>{item === "All" ? <Layers3 size={13} /> : <CategoryIcon category={item} />}{item}<span>{item === "All" ? animations.length : animations.filter((animation) => animation.category === item).length}</span></button>)}
-            </div>
-            <div className="search-wrap">
-              <Search size={15} />
-              <input aria-label="Search animations" value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Search animations..." />
-              {query ? <button className="search-clear" onClick={() => setQuery("")} aria-label="Clear search"><X size={13} /></button> : <kbd>/</kbd>}
-              <button className={"search-filter-button" + (showFilters ? " is-active" : "")} onClick={() => setShowFilters(!showFilters)} aria-label="Toggle filter options"><SlidersHorizontal size={14} /></button>
-            </div>
-          </div>
-          <AnimatePresence initial={false}>
-            {showFilters && <motion.div className="filter-details" initial={{ height: 0, opacity: 0 }} animate={{ height: "auto", opacity: 1 }} exit={{ height: 0, opacity: 0 }}><span>CURATED FOR PRODUCT TEAMS</span><span><i /> Responsive previews</span><span><i /> React + CSS snippets</span><span><i /> Light / dark canvas</span></motion.div>}
-          </AnimatePresence>
-          <div className="results-line"><span>SHOWING <b>{String(filtered.length).padStart(2, "0")}</b> OF {String(animations.length).padStart(2, "0")} ANIMATIONS</span><span>SORTED BY CURATION <span className="results-line-dot">✳</span></span></div>
-          {filtered.length ? (
-            <motion.div layout className="animation-grid">
-              {filtered.map((animation) => <AnimationCard key={animation.slug} animation={animation} index={animations.findIndex((item) => item.slug === animation.slug)} />)}
-            </motion.div>
-          ) : (
-            <div className="empty-state"><Search size={20} /><h3>No animations found</h3><p>Try a different term or category.</p><button className="button button-secondary" onClick={() => { setQuery(""); setCategory("All"); }}>Clear filters <X size={14} /></button></div>
-          )}
-        </section>
+          <div className="hero-demo-footer"><span>One effect at a time.</span><span>Nothing hidden behind a full-page preview.</span></div>
+        </motion.div>
+      </section>
 
-        <section className="closing-cta">
-          <div className="closing-cta-orb" />
-          <div className="closing-cta-content"><div className="section-eyebrow"><span>02</span> OPEN BY DESIGN</div><h2>Good motion is felt,<br /><span>not noticed.</span></h2><p>Take the patterns, adapt the timing, and make them part of your product. Built to be explored and remixed.</p><a className="button button-primary" href="https://github.com/SohailKhan0525/website-demo" target="_blank" rel="noreferrer">Contribute on GitHub <ArrowUpRight size={15} /></a></div>
-          <div className="closing-cta-code"><span className="terminal-top"><i /><i /><i /><b>TERMINAL / 001</b></span><p><span>$</span> npm install motion</p><p><span>$</span> git clone motion-foundry</p><div className="terminal-status"><span /> READY TO SHIP</div></div>
-        </section>
-      </main>
-      <SiteFooter />
-    </div>
-  );
+      <section id="library" className="library-section">
+        <div className="section-heading"><div><Eyebrow>THE COLLECTION</Eyebrow><h2>Browse the studies.</h2><p>Small, focused examples. Each page shows what moves and how to copy it.</p></div><div className="collection-count"><strong>{String(animations.length).padStart(2, "0")}</strong><span>STUDIES IN THIS VERSION</span></div></div>
+        <div className="library-toolbar">
+          <div className="category-tabs" role="group" aria-label="Filter by category">{categories.map((item) => <button key={item} type="button" className={"category-tab" + (category === item ? " is-active" : "")} onClick={() => setCategory(item)}>{item}<span>{item === "All" ? animations.length : animations.filter((a) => a.category === item).length}</span></button>)}</div>
+          <label className="search-field"><Search size={15} /><input id="animation-search" value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Find an animation..." /><kbd>/</kbd>{query && <button type="button" onClick={() => setQuery("")} aria-label="Clear search"><X size={13} /></button>}</label>
+        </div>
+        <div className="results-summary"><span>{filtered.length} {filtered.length === 1 ? "study" : "studies"}</span><span>{query || category !== "All" ? "Filtered collection" : "Browse at your own pace"}</span></div>
+        {filtered.length ? <motion.div layout className="animation-grid">{filtered.map((animation) => <AnimationCard key={animation.slug} animation={animation} index={animations.findIndex((item) => item.slug === animation.slug)} />)}</motion.div> : <div className="empty-state"><Search size={20} /><h3>Nothing matched that search.</h3><p>Try another word or clear the category filter.</p><button className="button button-secondary" onClick={() => { setQuery(""); setCategory("All"); }}>Reset filters</button></div>}
+      </section>
+
+      <section className="about-section" id="about">
+        <div className="about-copy"><Eyebrow>THE PERSON BEHIND IT</Eyebrow><h2>Built in public.<br /><em>One person at a time.</em></h2><p>Motion Shelf is a solo project by Sohail Khan. I’m building it to make motion easier to learn, inspect, and reuse—not to pretend every experiment is production-ready.</p><p>Some studies are polished CSS or Motion examples; others are clearly marked starting points for more advanced canvas or WebGL work. The code should tell you what it actually does.</p><a className="text-link" href="https://github.com/SohailKhan0525/website-demo" target="_blank" rel="noreferrer">Read the source on GitHub <ArrowUpRight size={14} /></a></div>
+        <div className="about-card"><AuthorNote /><div className="about-card-divider" /><p>Project owner and maintainer: <strong>Sohail Khan</strong>. Built with <strong>ChatGPT</strong> as an AI coding collaborator.</p><div className="about-card-links"><a href="https://github.com/SohailKhan0525" target="_blank" rel="noreferrer"><Github size={14} /> GitHub profile <ArrowUpRight size={12} /></a><a href="https://github.com/SohailKhan0525/website-demo" target="_blank" rel="noreferrer">Project repository <ArrowUpRight size={12} /></a></div></div>
+      </section>
+    </main>
+    <Footer />
+  </div>;
 }
 
-function SiteFooter() {
-  return <footer className="site-footer"><Link href="/" className="footer-brand"><span className="brand-mark"><Sparkles size={14} /></span> motionfoundry</Link><span>BUILT FOR THE FEEL OF IT <i>✳</i></span><a href="https://github.com/SohailKhan0525/website-demo" target="_blank" rel="noreferrer">OPEN SOURCE <ArrowUpRight size={12} /></a></footer>;
+function Footer() {
+  return <footer className="site-footer"><Link href="/" className="footer-wordmark"><span className="wordmark-symbol">m<span>.</span></span> motion shelf</Link><span>A small, independent project by Sohail Khan.</span><a href="https://github.com/SohailKhan0525/website-demo" target="_blank" rel="noreferrer">Open source <ArrowUpRight size={13} /></a></footer>;
 }
-
-type Recipe = { initial: Record<string, unknown>; animate: Record<string, unknown>; transition: Record<string, unknown> };
-
-const recipes: Record<string, Recipe> = {
-  assembly: { initial: { opacity: 0, y: 28, rotateX: 16, scale: 0.94 }, animate: { opacity: 1, y: 0, rotateX: 0, scale: 1 }, transition: { type: "spring", stiffness: 88, damping: 17 } },
-  dolly: { initial: { opacity: 0, scale: 1.16, rotateX: -5 }, animate: { opacity: 1, scale: 1, rotateX: 0 }, transition: { duration: 1.1, ease: [0.22, 1, 0.36, 1] } },
-  portal: { initial: { opacity: 0, clipPath: "circle(0% at 50% 50%)", scale: 0.8 }, animate: { opacity: 1, clipPath: "circle(74% at 50% 50%)", scale: 1 }, transition: { duration: 0.9, ease: [0.76, 0, 0.24, 1] } },
-  liquid: { initial: { opacity: 0, rotate: -5, scale: 0.94, borderRadius: "34% 66% 59% 41%" }, animate: { opacity: 1, rotate: 3, scale: 1.02, borderRadius: "63% 37% 32% 68%" }, transition: { duration: 2.4, repeat: Infinity, repeatType: "mirror", ease: "easeInOut" } },
-  particles: { initial: { opacity: 0, scale: 0.3, rotate: -24 }, animate: { opacity: 1, scale: 1, rotate: 0 }, transition: { type: "spring", stiffness: 54, damping: 14 } },
-  light: { initial: { opacity: 0, backgroundPosition: "0% 50%" }, animate: { opacity: 1, backgroundPosition: "100% 50%" }, transition: { duration: 1.8, repeat: Infinity, repeatType: "mirror" } },
-  kinetic: { initial: { opacity: 0, y: 30, letterSpacing: "0.16em" }, animate: { opacity: 1, y: 0, letterSpacing: "-0.035em" }, transition: { duration: 0.9, ease: [0.22, 1, 0.36, 1] } },
-  depth: { initial: { opacity: 0, z: -100, rotateY: -24, scale: 0.86 }, animate: { opacity: 1, z: 0, rotateY: 0, scale: 1 }, transition: { type: "spring", stiffness: 70, damping: 18 } },
-  morph: { initial: { scale: 0.8, borderRadius: "58% 42% 47% 53%" }, animate: { scale: 1, borderRadius: "38% 62% 58% 42%" }, transition: { duration: 2.2, repeat: Infinity, repeatType: "mirror", ease: "easeInOut" } },
-  timeline: { initial: { opacity: 0, y: 25, scale: 0.97 }, animate: { opacity: 1, y: 0, scale: 1 }, transition: { duration: 0.75, ease: [0.22, 1, 0.36, 1], delay: 0.12 } },
-  pin: { initial: { opacity: 0, scale: 0.91, y: 20 }, animate: { opacity: 1, scale: 1, y: 0 }, transition: { duration: 0.9, ease: "easeOut" } },
-  horizontal: { initial: { opacity: 0, x: 70 }, animate: { opacity: 1, x: 0 }, transition: { type: "spring", stiffness: 76, damping: 20 } },
-  mask: { initial: { opacity: 0, clipPath: "inset(0 100% 0 0 round 18px)" }, animate: { opacity: 1, clipPath: "inset(0 0% 0 0 round 18px)" }, transition: { duration: 1, ease: [0.76, 0, 0.24, 1] } },
-  parallax: { initial: { opacity: 0, y: 34, scale: 0.94 }, animate: { opacity: 1, y: 0, scale: 1 }, transition: { type: "spring", stiffness: 80, damping: 16 } },
-  state: { initial: { opacity: 0, scale: 0.92, rotate: -3 }, animate: { opacity: 1, scale: 1, rotate: 0 }, transition: { type: "spring", stiffness: 100, damping: 16 } },
-  chart: { initial: { opacity: 0, scaleX: 0.1, transformOrigin: "left" }, animate: { opacity: 1, scaleX: 1 }, transition: { duration: 1.2, ease: [0.22, 1, 0.36, 1] } },
-  shared: { initial: { opacity: 0, x: 22, y: 16, scale: 0.82, rotate: 5 }, animate: { opacity: 1, x: 0, y: 0, scale: 1, rotate: 0 }, transition: { type: "spring", stiffness: 92, damping: 17 } },
-  flip: { initial: { opacity: 0, rotateY: -85, scale: 0.96 }, animate: { opacity: 1, rotateY: 0, scale: 1 }, transition: { duration: 0.8, ease: [0.22, 1, 0.36, 1] } },
-  spring: { initial: { opacity: 0, scale: 0.62, y: 22 }, animate: { opacity: 1, scale: 1, y: 0 }, transition: { type: "spring", stiffness: 180, damping: 11 } },
-  magnetic: { initial: { opacity: 0, x: -12, y: 8 }, animate: { opacity: 1, x: 0, y: 0 }, transition: { type: "spring", stiffness: 130, damping: 12 } },
-  drag: { initial: { opacity: 0, x: 76, rotate: 5 }, animate: { opacity: 1, x: 0, rotate: 0 }, transition: { type: "spring", stiffness: 72, damping: 16, mass: 0.8 } },
-  tilt: { initial: { opacity: 0, rotateX: 15, rotateY: -20, scale: 0.94 }, animate: { opacity: 1, rotateX: 0, rotateY: 0, scale: 1 }, transition: { type: "spring", stiffness: 86, damping: 16 } },
-  gooey: { initial: { opacity: 0, scale: 0.65, borderRadius: "50% 50% 40% 60%" }, animate: { opacity: 1, scale: 1, borderRadius: "35% 65% 60% 40%" }, transition: { duration: 1.4, repeat: Infinity, repeatType: "mirror" } },
-  nav: { initial: { opacity: 0, x: -14, scale: 0.88 }, animate: { opacity: 1, x: 0, scale: 1 }, transition: { type: "spring", stiffness: 140, damping: 14 } },
-  expand: { initial: { opacity: 0, scale: 0.92, y: 10 }, animate: { opacity: 1, scale: 1, y: 0 }, transition: { type: "spring", stiffness: 90, damping: 16 } },
-  chromatic: { initial: { opacity: 0, x: -5, textShadow: "5px 0 rgba(255,80,155,.35), -5px 0 rgba(74,220,255,.35)" }, animate: { opacity: 1, x: 0, textShadow: "0px 0 transparent, 0px 0 transparent" }, transition: { duration: 0.9 } },
-  glass: { initial: { opacity: 0, y: 12, backdropFilter: "blur(0px)" }, animate: { opacity: 1, y: 0, backdropFilter: "blur(14px)" }, transition: { duration: 1.1 } },
-  glow: { initial: { opacity: 0, scale: 0.92, boxShadow: "0 0 0 rgba(144,128,255,0)" }, animate: { opacity: 1, scale: 1, boxShadow: "0 0 48px rgba(144,128,255,.28)" }, transition: { duration: 1.4, repeat: Infinity, repeatType: "mirror" } },
-  gradient: { initial: { opacity: 0, backgroundPosition: "0% 50%" }, animate: { opacity: 1, backgroundPosition: "100% 50%" }, transition: { duration: 3.4, repeat: Infinity, repeatType: "mirror" } },
-  wireframe: { initial: { opacity: 0, scale: 0.72, rotate: 11 }, animate: { opacity: 1, scale: 1, rotate: 0 }, transition: { duration: 1.1, ease: [0.22, 1, 0.36, 1] } },
-  reflection: { initial: { opacity: 0, rotateY: -24, rotateX: 12 }, animate: { opacity: 1, rotateY: 0, rotateX: 0 }, transition: { type: "spring", stiffness: 66, damping: 18 } },
-  stream: { initial: { opacity: 0, x: -18 }, animate: { opacity: 1, x: 0 }, transition: { duration: 0.8, ease: "easeOut" } },
-  trace: { initial: { opacity: 0, y: 15, scale: 0.96 }, animate: { opacity: 1, y: 0, scale: 1 }, transition: { duration: 0.5, ease: "easeOut", staggerChildren: 0.08 } },
-  graph: { initial: { opacity: 0, scale: 0.84, rotate: -2 }, animate: { opacity: 1, scale: 1, rotate: 0 }, transition: { type: "spring", stiffness: 72, damping: 16 } },
-  tokens: { initial: { opacity: 0, y: 9, filter: "blur(5px)" }, animate: { opacity: 1, y: 0, filter: "blur(0px)" }, transition: { duration: 0.65, ease: "easeOut" } },
-  command: { initial: { opacity: 0, scale: 0.92, y: 12, filter: "blur(5px)" }, animate: { opacity: 1, scale: 1, y: 0, filter: "blur(0px)" }, transition: { type: "spring", stiffness: 100, damping: 17 } },
-  diff: { initial: { opacity: 0, x: 14, backgroundColor: "rgba(139,92,246,0)" }, animate: { opacity: 1, x: 0, backgroundColor: "rgba(139,92,246,.14)" }, transition: { duration: 0.65 } },
-  presence: { initial: { opacity: 0, x: -20, scale: 0.84 }, animate: { opacity: 1, x: 0, scale: 1 }, transition: { type: "spring", stiffness: 120, damping: 14 } },
-  workflow: { initial: { opacity: 0, scale: 0.92 }, animate: { opacity: 1, scale: 1 }, transition: { type: "spring", stiffness: 94, damping: 16 } }
-};
 
 const frameByKind: Record<string, string> = {
   assembly: "0% { transform: translate3d(0,18px,0) rotateX(8deg); opacity: .5; } 100% { transform: translate3d(0,0,0) rotateX(0); opacity: 1; }",
@@ -272,19 +177,19 @@ const frameByKind: Record<string, string> = {
   workflow: "0%,100% { box-shadow: 0 0 0 0 rgba(128,111,255,.08); } 50% { box-shadow: 0 0 0 8px rgba(128,111,255,.02); }"
 };
 
+
 function componentSnippet(animation: Animation) {
-  const recipe = recipes[animation.kind] || recipes.assembly;
-  const name = animation.slug.split("-").map((part) => part.charAt(0).toUpperCase() + part.slice(1)).join("");
-  return '"use client";\n\nimport { motion } from "motion/react";\n\nexport function ' + name + '() {\n  return (\n    <motion.div\n      className="mf-animation-demo"\n      initial={' + JSON.stringify(recipe.initial) + '}\n      animate={' + JSON.stringify(recipe.animate) + '}\n      transition={' + JSON.stringify(recipe.transition) + '}\n      style={{ transformPerspective: 1000 }}\n    >\n      <span className="mf-animation-demo__eyebrow">MOTION STUDY / ' + animation.category.toUpperCase() + '</span>\n      <strong>' + animation.name + '</strong>\n      <span className="mf-animation-demo__caption">' + animation.description + '</span>\n    </motion.div>\n  );\n}\n';
+  const componentName = animation.slug.split("-").map((part) => part[0].toUpperCase() + part.slice(1)).join("");
+  return '"use client";\n\nexport function ' + componentName + '() {\n  return (\n    <div className="motion-study motion-study--' + animation.kind + '" aria-label="' + animation.name + '">\n      <span className="motion-study__eyebrow">' + animation.category + ' / MOTION STUDY</span>\n      <span className="motion-study__shape" aria-hidden="true" />\n      <strong>' + animation.name + '</strong>\n      <p>' + animation.description + '</p>\n    </div>\n  );\n}\n';
 }
 
 function cssSnippet(animation: Animation) {
   const keyframe = frameByKind[animation.kind] || frameByKind.timeline;
-  return '.mf-animation-demo {\n  display: flex;\n  flex-direction: column;\n  gap: 12px;\n  max-width: 560px;\n  padding: 28px;\n  color: #f5f3ff;\n  background: radial-gradient(circle at 82% 12%, rgba(125, 105, 255, .24), transparent 38%), #101014;\n  border: 1px solid rgba(255, 255, 255, .12);\n  border-radius: 22px;\n  box-shadow: 0 24px 80px rgba(0, 0, 0, .22);\n  transform-origin: center;\n  animation: mf-effect-' + animation.kind + ' 3.4s ease-in-out infinite alternate;\n}\n\n.mf-animation-demo__eyebrow {\n  color: #aaa3ff;\n  font: 600 10px/1.2 ui-monospace, SFMono-Regular, monospace;\n  letter-spacing: .16em;\n}\n\n.mf-animation-demo strong {\n  font-size: clamp(24px, 4vw, 42px);\n  letter-spacing: -.055em;\n}\n\n.mf-animation-demo__caption {\n  max-width: 46ch;\n  color: #aaa9b5;\n  font-size: 13px;\n  line-height: 1.6;\n}\n\n@keyframes mf-effect-' + animation.kind + ' {\n  ' + keyframe + '\n}\n\n@media (prefers-reduced-motion: reduce) {\n  .mf-animation-demo { animation: none; }\n}';
+  return '.motion-study {\n  position: relative;\n  display: grid;\n  justify-items: start;\n  gap: 12px;\n  width: min(100%, 520px);\n  min-height: 230px;\n  overflow: hidden;\n  padding: 28px;\n  color: #f4f1e9;\n  background: #171714;\n  border: 1px solid rgba(255,255,255,.14);\n  border-radius: 16px;\n  isolation: isolate;\n}\n\n.motion-study__eyebrow { color: #b4ad9d; font: 10px ui-monospace, monospace; letter-spacing: .12em; text-transform: uppercase; }\n.motion-study__shape { position: absolute; z-index: -1; top: 15%; right: 12%; width: 110px; aspect-ratio: 1; border-radius: 42% 58% 54% 46%; background: linear-gradient(135deg, #d7c9ff, #8774dc 52%, #b6ead8); filter: drop-shadow(0 12px 30px rgba(137,116,220,.2)); animation: motion-study-' + animation.kind + ' 3.4s ease-in-out infinite alternate; }\n.motion-study strong { max-width: 15ch; margin-top: auto; font-size: clamp(24px,4vw,40px); line-height: 1.05; letter-spacing: -.06em; }\n.motion-study p { max-width: 45ch; margin: 0; color: #b8b4aa; font-size: 13px; line-height: 1.65; }\n\n@keyframes motion-study-' + animation.kind + ' {\n  ' + keyframe + '\n}\n\n@media (prefers-reduced-motion: reduce) { .motion-study__shape { animation: none; } }';
 }
 
 function installSnippet() {
-  return "npm install motion";
+  return "// No package is required for this CSS-only starter.\n// Copy the Component and CSS snippets, then import the stylesheet.";
 }
 
 export function AnimationDetail({ animation }: { animation: Animation }) {
@@ -292,73 +197,35 @@ export function AnimationDetail({ animation }: { animation: Animation }) {
   const [tab, setTab] = useState<CodeTab>("Component");
   const [copied, setCopied] = useState(false);
   const [showMore, setShowMore] = useState(false);
-  const code = useMemo(() => ({
-    Component: componentSnippet(animation),
-    CSS: cssSnippet(animation),
-    Install: installSnippet(),
-  }), [animation]);
+  const code = useMemo(() => ({ Component: componentSnippet(animation), CSS: cssSnippet(animation), Setup: installSnippet() }), [animation]);
   const currentCode = code[tab];
+  const index = animations.findIndex((item) => item.slug === animation.slug);
+  const previous = animations[(index - 1 + animations.length) % animations.length];
+  const next = animations[(index + 1) % animations.length];
 
   async function copyCurrent() {
     try {
       await navigator.clipboard.writeText(currentCode);
       setCopied(true);
-      window.setTimeout(() => setCopied(false), 1800);
-    } catch {
-      setCopied(false);
-    }
+      window.setTimeout(() => setCopied(false), 1600);
+    } catch { setCopied(false); }
   }
 
-  return (
-    <div className="app-shell" data-theme={theme}>
-      <SiteHeader theme={theme} setTheme={setTheme} detail />
-      <main className="detail-page">
-        <div className="detail-breadcrumb"><Link href="/">Library</Link><ChevronRight size={13} /><span>{animation.category}</span><ChevronRight size={13} /><span>{animation.name}</span></div>
-        <section className="detail-heading">
-          <div className="detail-heading-copy">
-            <div className="detail-eyebrow"><CategoryIcon category={animation.category} /> {animation.category.toUpperCase()} STUDY <span className="detail-eyebrow-line" /> {animation.level.toUpperCase()}</div>
-            <h1>{animation.name}</h1>
-            <p>{animation.description}</p>
-            <div className="detail-tags">{animation.tags.map((tag) => <span key={tag}>{tag}</span>)}</div>
-          </div>
-          <div className="detail-id"><span>STUDY</span><strong>{String(animations.findIndex((item) => item.slug === animation.slug) + 1).padStart(2, "0")}<i>/</i>50</strong><span>CURATED MOTION</span></div>
-        </section>
-
-        <section className="detail-workspace">
-          <div className="detail-preview-column">
-            <PreviewFrame animation={animation} />
-            <div className="preview-underbar"><span><i /> LIVE PREVIEW ENVIRONMENT</span><span>CONTAINED CANVAS <b>{animation.size === "large" ? "LARGE" : "MEDIUM"}</b></span></div>
-            <div className="implementation-notes">
-              <div className="section-eyebrow"><span>01</span> IMPLEMENTATION NOTES</div>
-              <h2>Make the motion <span>your own.</span></h2>
-              <p>This starter is intentionally compact. Copy the React component and its CSS, then tune timing, distance, and easing to fit your product’s visual language.</p>
-              <div className="note-grid"><div><span>01 / TIMING</span><b>Intent over speed</b><p>Use duration and delay to establish a clear hierarchy.</p></div><div><span>02 / EASING</span><b>Give it a character</b><p>Spring motion adds tactility; smooth easing feels cinematic.</p></div></div>
-            </div>
-          </div>
-          <aside className="code-column">
-            <div className="code-panel">
-              <div className="code-panel-heading"><div><span className="code-panel-kicker"><Terminal size={13} /> COPY / PASTE</span><h2>Take the code.</h2></div><span className="code-file-badge">TSX + CSS</span></div>
-              <p className="code-panel-description">A starter implementation for this motion pattern. Drop it into your app and customize from there.</p>
-              <div className="code-tabs" role="tablist" aria-label="Code type">
-                {(["Component", "CSS", "Install"] as CodeTab[]).map((item) => <button key={item} className={"code-tab" + (tab === item ? " is-active" : "")} role="tab" aria-selected={tab === item} onClick={() => { setTab(item); setCopied(false); }}>{item === "Component" ? <Code2 size={13} /> : item === "CSS" ? <Layers3 size={13} /> : <Terminal size={13} />}{item}</button>)}
-              </div>
-              <div className="code-meta"><span><span className="code-status-dot" /> {tab === "Install" ? "PACKAGE MANAGER" : tab === "CSS" ? "STYLESHEET" : "REACT COMPONENT"}</span><span>{tab === "Install" ? "SHELL" : tab === "CSS" ? "CSS" : "TSX"}</span></div>
-              <pre className={"code-block code-block--" + tab.toLowerCase()}><code>{currentCode}</code></pre>
-              <div className="code-panel-footer"><span>{tab === "Install" ? "1 line" : tab === "CSS" ? "CSS keyframes included" : "Ready to customize"}</span><button className={"copy-button" + (copied ? " is-copied" : "")} onClick={copyCurrent}>{copied ? <Check size={14} /> : <Copy size={14} />}{copied ? "Copied" : "Copy " + tab}</button></div>
-              {tab !== "Install" && <p className="code-footnote"><Sparkles size={13} /> Uses Motion for React. Add the CSS tab to reproduce the accent treatment.</p>}
-            </div>
-            <div className="code-steps">
-              <div className="code-steps-heading"><span className="section-eyebrow">QUICK START</span><button onClick={() => setShowMore(!showMore)} aria-expanded={showMore}>{showMore ? "Hide steps" : "Show steps"} <ChevronRight size={13} className={showMore ? "rotate-90" : ""} /></button></div>
-              <div className="quick-step"><span>1</span><div><b>Install Motion</b><p>Add the animation runtime to your Next.js project.</p></div><button aria-label="Copy install command" onClick={async () => { await navigator.clipboard.writeText("npm install motion"); setCopied(true); window.setTimeout(() => setCopied(false), 1800); }}><Copy size={13} /></button></div>
-              <AnimatePresence>{showMore && <motion.div className="expanded-steps" initial={{ height: 0, opacity: 0 }} animate={{ height: "auto", opacity: 1 }} exit={{ height: 0, opacity: 0 }}><div className="quick-step"><span>2</span><div><b>Create the component</b><p>Paste the Component snippet into a client component.</p></div></div><div className="quick-step"><span>3</span><div><b>Add the styles</b><p>Place the CSS snippet in your global stylesheet or a CSS module.</p></div></div></motion.div>}</AnimatePresence>
-            </div>
-            <div className="library-next"><span>KEEP EXPLORING</span><Link href={"/" + animations[(animations.findIndex((item) => item.slug === animation.slug) + 1) % animations.length].slug}>Next animation <ArrowRight size={14} /></Link></div>
-          </aside>
-        </section>
-        <section className="related-section"><div className="section-eyebrow"><span>03</span> KEEP THE FLOW GOING</div><h2>Related <span>motion studies.</span></h2><div className="related-grid">{animations.filter((item) => item.category === animation.category && item.slug !== animation.slug).slice(0, 3).map((item) => <Link href={"/" + item.slug} className="related-card" key={item.slug}><MiniArtwork animation={item} /><div><span>{item.category.toUpperCase()}</span><b>{item.name}</b><ArrowUpRight size={14} /></div></Link>)}</div></section>
-      </main>
-      <SiteFooter />
-    </div>
-  );
+  return <div className="app-shell" data-theme={theme}>
+    <Header theme={theme} setTheme={setTheme} detail />
+    <main className="detail-page">
+      <div className="detail-breadcrumb"><Link href="/">Library</Link><ChevronRight size={13} /><span>{animation.category}</span><ChevronRight size={13} /><span>{animation.name}</span></div>
+      <section className="detail-heading"><div><Eyebrow>{animation.category.toUpperCase()} STUDY · {String(index + 1).padStart(2, "0")} / {String(animations.length).padStart(2, "0")}</Eyebrow><h1>{animation.name}</h1><p>{animation.description}</p><div className="detail-tags">{animation.tags.map((tag) => <span key={tag}>{tag}</span>)}</div></div><div className="detail-nav"><Link href={"/" + previous.slug}><ArrowLeft size={14} /> Previous</Link><Link href={"/" + next.slug}>Next <ArrowRight size={14} /></Link></div></section>
+      <section className="detail-workspace">
+        <div className="preview-column"><PreviewFrame animation={animation} /><div className="preview-note"><span><i /> Preview runs in your browser</span><span>Canvas: {animation.size}</span></div><div className="implementation-note"><Eyebrow>NOTES FROM THE WORKBENCH</Eyebrow><h2>Understand it.<br /><em>Then make it yours.</em></h2><p>The snippets below are a starting point, not a magic drop-in package. Copy both the component and CSS for the full treatment, then adapt the names, colors, and timing to your project.</p><div className="note-row"><span>01</span><div><strong>Keep the motion purposeful.</strong><p>Animate what changes, not everything on the screen.</p></div></div><div className="note-row"><span>02</span><div><strong>Respect reduced motion.</strong><p>Every example includes a reduced-motion fallback.</p></div></div></div></div>
+        <aside className="code-column"><div className="code-panel"><div className="code-panel-heading"><div><Eyebrow>THE IMPLEMENTATION</Eyebrow><h2>Take the code.</h2></div><span className="code-file-type">{tab === "Component" ? ".tsx" : tab === "CSS" ? ".css" : "shell"}</span></div><p className="code-description">{tab === "Component" ? "The minimal markup for this study." : tab === "CSS" ? "The visual treatment and keyframes used by the study." : "No package is required for this CSS-only starter."}</p><div className="code-tabs" role="tablist" aria-label="Snippet type">{(["Component", "CSS", "Setup"] as CodeTab[]).map((item) => <button type="button" key={item} role="tab" aria-selected={tab === item} className={"code-tab" + (tab === item ? " is-active" : "")} onClick={() => { setTab(item); setCopied(false); }}>{item === "Component" ? <Code2 size={13} /> : item === "CSS" ? <span className="css-glyph">#</span> : <span className="terminal-glyph">$</span>}{item}</button>)}</div><div className="code-meta"><span>{tab === "Setup" ? "PACKAGE MANAGER" : tab === "CSS" ? "STYLESHEET" : "REACT COMPONENT"}</span><span>{currentCode.split("\n").length} lines</span></div><pre className="code-block"><code>{currentCode}</code></pre><div className="code-footer"><span>{tab === "Setup" ? "Optional for this CSS-only starter" : "Copy, then customize"}</span><button className={"copy-button" + (copied ? " is-copied" : "")} onClick={copyCurrent}>{copied ? <Check size={14} /> : <Copy size={14} />}{copied ? "Copied" : "Copy " + tab}</button></div><div className="code-disclaimer">For the full effect, copy the Component and CSS snippets. No extra package is required for this CSS-only starter.</div></div>
+          <div className="quick-start"><button type="button" className="quick-start-toggle" onClick={() => setShowMore(!showMore)} aria-expanded={showMore}><span><span className="quick-start-number">01</span> How to use this snippet</span><ChevronRight size={15} className={showMore ? "rotate" : ""} /></button><AnimatePresence initial={false}>{showMore && <motion.div className="quick-start-content" initial={{ height: 0, opacity: 0 }} animate={{ height: "auto", opacity: 1 }} exit={{ height: 0, opacity: 0 }} transition={{ duration: .24, ease: [0.22, 1, 0.36, 1] }}><p>1. Create a component file and paste the Component snippet.</p><p>2. Add the CSS snippet to a stylesheet imported by that component.</p><p>3. Tweak the duration, easing, shape, and colors. Keep the reduced-motion fallback.</p></motion.div>}</AnimatePresence></div>
+          <div className="detail-pagination"><Link href={"/" + previous.slug}><span>PREVIOUS STUDY</span><strong><ArrowLeft size={14} /> {previous.name}</strong></Link><Link href={"/" + next.slug}><span>NEXT STUDY</span><strong>{next.name} <ArrowRight size={14} /></strong></Link></div>
+        </aside>
+      </section>
+      <section className="related-section"><Eyebrow>KEEP EXPLORING</Eyebrow><h2>More from {animation.category.toLowerCase()}.</h2><div className="related-grid">{animations.filter((item) => item.category === animation.category && item.slug !== animation.slug).slice(0, 3).map((item, i) => <AnimationCard key={item.slug} animation={item} index={i} />)}</div></section>
+      <div className="detail-author"><AuthorNote compact /></div>
+    </main>
+    <Footer />
+  </div>;
 }
-

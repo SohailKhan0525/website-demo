@@ -1,131 +1,72 @@
 "use client";
 
 import { useState } from "react";
-import { Moon, Sun, RotateCcw, Sparkles } from "lucide-react";
+import { Moon, RotateCcw, Sun } from "lucide-react";
+import { motion, useReducedMotion } from "motion/react";
 import type { Animation } from "./animations";
 
-export function MiniArtwork({ animation }: { animation: Animation }) {
-  return (
-    <div className={"mini-art mini-art--" + animation.kind} aria-hidden="true">
-      <div className="mini-art-glow" />
-      <div className="mini-art-orb" />
-      <div className="mini-art-window">
-        <div className="mini-art-bar"><i /><i /><i /><span /></div>
-        <div className="mini-art-body">
-          <div className="mini-art-sidebar"><b /><b /><b /><b /></div>
-          <div className="mini-art-content">
-            <div className="mini-art-title" />
-            <div className="mini-art-stats"><i /><i /><i /></div>
-            <div className="mini-art-chart"><span /><span /><span /><span /><span /><span /><span /></div>
-            <div className="mini-art-lines"><i /><i /><i /></div>
-          </div>
-        </div>
-      </div>
-      <div className="mini-art-chip"><Sparkles size={11} strokeWidth={1.7} /><span>LIVE</span></div>
-    </div>
-  );
+const motionForKind = {
+  assembly: { animate: { y: [20, 0], rotateX: [14, 0], opacity: [0, 1] }, transition: { duration: .9, ease: [0.22, 1, 0.36, 1] } },
+  dolly: { animate: { scale: [1.12, 1], opacity: [0, 1] }, transition: { duration: 1.2, ease: [0.22, 1, 0.36, 1] } },
+  portal: { animate: { clipPath: ["circle(0% at 50% 50%)", "circle(75% at 50% 50%)"], scale: [.8, 1] }, transition: { duration: .85, ease: [0.76, 0, 0.24, 1] } },
+  liquid: { animate: { borderRadius: ["32% 68% 58% 42%", "61% 39% 34% 66%", "32% 68% 58% 42%"], rotate: [-4, 5, -4] }, transition: { duration: 5, repeat: Infinity, ease: "easeInOut" } },
+  particles: { animate: { scale: [.4, 1], rotate: [-22, 0], opacity: [.3, 1] }, transition: { duration: 1.4, type: "spring", stiffness: 65, damping: 15 } },
+  light: { animate: { x: [-55, 55], opacity: [.25, .85, .25] }, transition: { duration: 3.4, repeat: Infinity, ease: "easeInOut" } },
+  kinetic: { animate: { y: [18, 0], letterSpacing: [".12em", "-.04em"], opacity: [0, 1] }, transition: { duration: .8, ease: [0.22, 1, 0.36, 1] } },
+  depth: { animate: { z: [-90, 0], rotateY: [-18, 0], opacity: [.2, 1] }, transition: { duration: 1.1, ease: [0.22, 1, 0.36, 1] } },
+  morph: { animate: { borderRadius: ["58% 42% 47% 53%", "38% 62% 58% 42%", "58% 42% 47% 53%"], rotate: [0, 10, 0] }, transition: { duration: 5, repeat: Infinity, ease: "easeInOut" } },
+  timeline: { animate: { y: [18, 0], scale: [.98, 1], opacity: [0, 1] }, transition: { duration: .8, ease: [0.22, 1, 0.36, 1] } },
+  pin: { animate: { y: [16, 0], scale: [.92, 1] }, transition: { duration: .8, type: "spring", stiffness: 110, damping: 15 } },
+  horizontal: { animate: { x: [-24, 0], opacity: [.2, 1] }, transition: { duration: .85, ease: [0.22, 1, 0.36, 1] } },
+  mask: { animate: { clipPath: ["inset(0 100% 0 0 round 18px)", "inset(0 0 0 0 round 18px)"] }, transition: { duration: .9, ease: [0.76, 0, 0.24, 1] } },
+  parallax: { animate: { y: [5, -8, 5] }, transition: { duration: 4, repeat: Infinity, ease: "easeInOut" } },
+  state: { animate: { scale: [.96, 1], opacity: [.6, 1] }, transition: { duration: .7, ease: "easeOut" } },
+  chart: { animate: { scaleX: [.12, 1], opacity: [.3, 1] }, transition: { duration: 1.1, ease: [0.22, 1, 0.36, 1] } },
+  shared: { animate: { x: [18, 0], y: [12, 0], scale: [.84, 1], rotate: [5, 0] }, transition: { duration: .8, type: "spring", stiffness: 95, damping: 16 } },
+  flip: { animate: { rotateY: [-80, 0], opacity: [.25, 1] }, transition: { duration: .8, ease: [0.22, 1, 0.36, 1] } },
+  spring: { animate: { scale: [.65, 1.06, 1], y: [18, -3, 0] }, transition: { duration: 1.1, type: "spring", stiffness: 140, damping: 12 } },
+  magnetic: { animate: { x: [-9, 4, 0], y: [4, -2, 0] }, transition: { duration: 1.1, type: "spring", stiffness: 120, damping: 12 } },
+  drag: { animate: { x: [50, -6, 0], rotate: [7, -1, 0] }, transition: { duration: 1.3, type: "spring", stiffness: 72, damping: 15 } },
+  tilt: { animate: { rotateX: [13, 0], rotateY: [-18, 0] }, transition: { duration: 1, type: "spring", stiffness: 80, damping: 16 } },
+  gooey: { animate: { borderRadius: ["50% 48% 42% 58%", "34% 66% 61% 39%", "50% 48% 42% 58%"], scale: [.95, 1.04, .95] }, transition: { duration: 4, repeat: Infinity, ease: "easeInOut" } },
+  nav: { animate: { x: [-14, 0], scale: [.9, 1], opacity: [0, 1] }, transition: { duration: .6, type: "spring", stiffness: 130, damping: 14 } },
+  expand: { animate: { scale: [.88, 1], y: [12, 0], opacity: [0, 1] }, transition: { duration: .65, type: "spring", stiffness: 100, damping: 16 } },
+  chromatic: { animate: { x: [-3, 0], opacity: [.4, 1] }, transition: { duration: .8, ease: "easeOut" } },
+  glass: { animate: { y: [12, 0], opacity: [0, 1] }, transition: { duration: .9, ease: [0.22, 1, 0.36, 1] } },
+  glow: { animate: { boxShadow: ["0 0 12px rgba(120,100,220,.12)", "0 0 42px rgba(120,100,220,.45)", "0 0 12px rgba(120,100,220,.12)"] }, transition: { duration: 3, repeat: Infinity, ease: "easeInOut" } },
+  gradient: { animate: { backgroundPosition: ["0% 50%", "100% 50%", "0% 50%"] }, transition: { duration: 7, repeat: Infinity, ease: "linear" } },
+  reflection: { animate: { rotateY: [-12, 12, -12], filter: ["brightness(.8)", "brightness(1.2)", "brightness(.8)"] }, transition: { duration: 5, repeat: Infinity, ease: "easeInOut" } },
+  wireframe: { animate: { scale: [.8, 1], rotate: [7, 0], opacity: [.25, 1] }, transition: { duration: 1, ease: [0.22, 1, 0.36, 1] } },
+  stream: { animate: { x: [-12, 0], opacity: [.2, 1] }, transition: { duration: .8, ease: "easeOut" } },
+  trace: { animate: { y: [12, 0], opacity: [0, 1] }, transition: { duration: .65, ease: "easeOut" } },
+  graph: { animate: { y: [0, -5, 0], scale: [.98, 1, .98] }, transition: { duration: 3, repeat: Infinity, ease: "easeInOut" } },
+  tokens: { animate: { y: [8, 0], opacity: [.15, 1], filter: ["blur(4px)", "blur(0px)"] }, transition: { duration: .7, ease: "easeOut" } },
+  command: { animate: { y: [12, 0], scale: [.95, 1], opacity: [0, 1] }, transition: { duration: .7, type: "spring", stiffness: 100, damping: 16 } },
+  diff: { animate: { x: [12, 0], opacity: [.2, 1] }, transition: { duration: .6, ease: "easeOut" } },
+  presence: { animate: { x: [-12, 0], scale: [.8, 1], opacity: [0, 1] }, transition: { duration: .7, type: "spring", stiffness: 120, damping: 14 } },
+  workflow: { animate: { scale: [.96, 1, .98, 1] }, transition: { duration: 2.8, repeat: Infinity, ease: "easeInOut" } },
+};
+
+function Shape({ kind, replay }: { kind: string; replay: number }) {
+  const reduced = useReducedMotion();
+  const effect = Object.prototype.hasOwnProperty.call(motionForKind, kind) ? motionForKind[kind as keyof typeof motionForKind] : motionForKind.assembly;
+  return <div className={"preview-art preview-art--" + kind} key={replay}>
+    <div className="preview-halo" />
+    <motion.div className="preview-shape" initial={{ opacity: 0, scale: .82 }} animate={reduced ? { opacity: 1, scale: 1 } : effect.animate as never} transition={reduced ? { duration: 0 } : effect.transition as never}><span /></motion.div>
+    <motion.div className="preview-copy" initial={reduced ? false : { opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: reduced ? 0 : .5, delay: reduced ? 0 : .12 }}><span className="preview-copy-label">MOTION STUDY</span><strong>A little movement<br />goes a long way.</strong><span className="preview-copy-line"><i /> Intentional by design</span></motion.div>
+    <div className="preview-art-index">01 <span>—</span> 03</div>
+  </div>;
 }
 
-function SceneGraphic({ kind }: { kind: string }) {
-  if (kind === "graph" || kind === "wireframe" || kind === "workflow" || kind === "stream" || kind === "trace") {
-    return (
-      <div className={"scene-network scene-network--" + kind}>
-        <svg className="scene-network-lines" viewBox="0 0 430 210" fill="none" aria-hidden="true">
-          <path d="M52 107 L142 50 L230 104 L324 47 M142 50 L157 164 L230 104 L324 165 M230 104 L380 105" />
-          <path d="M52 107 L157 164 L324 165 L380 105 L324 47" />
-        </svg>
-        <div className="network-node node-a"><span>01</span></div>
-        <div className="network-node node-b"><span>02</span></div>
-        <div className="network-node node-c"><span>03</span></div>
-        <div className="network-node node-d"><span>04</span></div>
-        <div className="network-node node-e"><span>05</span></div>
-        <div className="network-node node-f"><span>AI</span></div>
-      </div>
-    );
-  }
-
-  if (kind === "light" || kind === "particles" || kind === "liquid" || kind === "gooey" || kind === "morph" || kind === "glass" || kind === "glow" || kind === "reflection" || kind === "gradient" || kind === "chromatic") {
-    return (
-      <div className={"scene-object scene-object--" + kind}>
-        <div className="object-halo" />
-        <div className="object-core" />
-        <div className="object-ring ring-one" />
-        <div className="object-ring ring-two" />
-        <div className="object-spark spark-one" />
-        <div className="object-spark spark-two" />
-        <div className="object-spark spark-three" />
-      </div>
-    );
-  }
-
-  if (kind === "tokens" || kind === "command" || kind === "diff" || kind === "presence") {
-    return (
-      <div className={"scene-console scene-console--" + kind}>
-        <div className="console-search"><span className="console-search-icon">⌕</span><span>{kind === "command" ? "Search commands…" : kind === "tokens" ? "Generating response" : kind === "diff" ? "Changes detected" : "3 teammates online"}</span><kbd>⌘ K</kbd></div>
-        <div className="console-result"><span className="console-result-icon">✦</span><div><b>{kind === "tokens" ? "Reasoning in progress" : kind === "diff" ? "Updated deployment" : "Open workspace"}</b><small>{kind === "presence" ? "Mira is editing this view" : "Ready in 248 ms"}</small></div><span className="console-result-arrow">↗</span></div>
-        <div className="console-result muted"><span className="console-result-icon">◌</span><div><b>{kind === "tokens" ? "Reading the context" : "Recent activity"}</b><small>Workspace · just now</small></div></div>
-        <div className="console-token-row"><i /><i /><i /><i /><i /></div>
-      </div>
-    );
-  }
-
-  return (
-    <div className={"scene-product scene-product--" + kind}>
-      <div className="product-floating-card product-floating-card--left">
-        <span className="mini-overline">ACTIVE FLOW</span>
-        <div className="product-card-value"><i /> 24.8k</div>
-        <div className="product-card-caption">Events processed</div>
-        <div className="product-card-sparkline"><i /><i /><i /><i /><i /><i /><i /><i /></div>
-      </div>
-      <div className="product-main-card">
-        <div className="product-card-top"><span className="product-dot" /> <span>WORKFLOW / 08</span><span className="product-status">RUNNING</span></div>
-        <div className="product-flow">
-          <div className="flow-step flow-step--one"><span>01</span><b>Trigger</b><small>Received</small></div>
-          <div className="flow-connector connector-one"><i /></div>
-          <div className="flow-step flow-step--two"><span>02</span><b>Process</b><small>Analyzing</small></div>
-          <div className="flow-connector connector-two"><i /></div>
-          <div className="flow-step flow-step--three"><span>03</span><b>Resolve</b><small>Complete</small></div>
-        </div>
-        <div className="product-card-footer"><span>LAST RUN <b>00:02.41</b></span><span className="product-footer-pulse" /> <span>ALL SYSTEMS NORMAL</span></div>
-      </div>
-      <div className="product-floating-card product-floating-card--right">
-        <span className="mini-overline">CONFIDENCE</span>
-        <div className="product-confidence">98<span>.4%</span></div>
-        <div className="confidence-track"><i /></div>
-        <div className="product-card-caption">+12.6% this week</div>
-      </div>
-      <div className="scene-orbit orbit-a" />
-      <div className="scene-orbit orbit-b" />
-      <div className="scene-laser" />
-    </div>
-  );
+export function MiniArtwork({ animation }: { animation: Animation }) {
+  return <div className={"mini-art mini-art--" + animation.kind} aria-hidden="true"><div className="mini-art-grid" /><div className="mini-art-glow" /><div className="mini-art-shape" /><div className="mini-art-caption"><span>{animation.category.toUpperCase()}</span><span>↗</span></div></div>;
 }
 
 export function PreviewFrame({ animation }: { animation: Animation }) {
   const [previewTheme, setPreviewTheme] = useState<"dark" | "light">("dark");
   const [replayKey, setReplayKey] = useState(0);
-
-  return (
-    <section className={"preview-frame preview-frame--" + animation.size} data-preview-theme={previewTheme}>
-      <div className="preview-toolbar">
-        <div className="preview-toolbar-label"><span className="live-indicator" /> LIVE PREVIEW <span className="preview-dot-separator">/</span> {animation.size.toUpperCase()} CANVAS</div>
-        <div className="preview-toolbar-actions">
-          <button className="icon-button preview-icon-button" aria-label="Replay animation" onClick={() => setReplayKey((value) => value + 1)} title="Replay">
-            <RotateCcw size={14} />
-          </button>
-          <button className="icon-button preview-icon-button" aria-label={"Switch preview to " + (previewTheme === "dark" ? "light" : "dark") + " mode"} onClick={() => setPreviewTheme((value) => value === "dark" ? "light" : "dark")} title="Toggle preview theme">
-            {previewTheme === "dark" ? <Sun size={14} /> : <Moon size={14} />}
-          </button>
-        </div>
-      </div>
-      <div className="preview-canvas">
-        <div className="preview-grid" />
-        <div className="preview-index">MF / {String(animation.slug.length).padStart(2, "0")}</div>
-        <div className="preview-canvas-inner" key={replayKey}>
-          <SceneGraphic kind={animation.kind} />
-        </div>
-        <div className="preview-caption"><span>{animation.name.toUpperCase()}</span><span>INTERACTIVE STUDY <i>↗</i></span></div>
-      </div>
-    </section>
-  );
+  return <section className={"preview-frame preview-frame--" + animation.size} data-preview-theme={previewTheme}>
+    <div className="preview-toolbar"><div className="preview-toolbar-label"><span className="preview-live-dot" /> LIVE PREVIEW <span>/</span> {animation.size.toUpperCase()} CANVAS</div><div className="preview-toolbar-actions"><button className="preview-tool" type="button" aria-label="Replay animation" onClick={() => setReplayKey((n) => n + 1)} title="Replay"><RotateCcw size={14} /></button><button className="preview-tool" type="button" aria-label={"Switch preview to " + (previewTheme === "dark" ? "light" : "dark")} onClick={() => setPreviewTheme((t) => t === "dark" ? "light" : "dark")} title="Toggle preview theme">{previewTheme === "dark" ? <Sun size={14} /> : <Moon size={14} /></button></div></div>
+    <div className="preview-canvas"><div className="preview-grid" /><Shape kind={animation.kind} replay={replayKey} /><div className="preview-caption"><span>{animation.name}</span><span>CONTAINED CANVAS</span></div></div>
+  </section>;
 }

@@ -1,8 +1,8 @@
 {
-  "name": "motion-foundry",
+  "name": "motion-shelf",
   "version": "1.0.0",
   "private": true,
-  "description": "A copy-paste gallery of premium motion patterns for React and Next.js.",
+  "description": "An independent open-source library of copyable motion studies.",
   "scripts": {
     "dev": "next dev",
     "build": "next build",

@@ -1,35 +1,37 @@
-# Motion Foundry
+# Motion Shelf
 
-A premium, open-source gallery of motion patterns for React and Next.js. Explore 50 effects, preview them in a contained stage, switch between light and dark preview surfaces, and copy a React starter, CSS accent, or install command.
+An independent, open-source collection of motion studies for React and the web.
 
-## Features
+**Project owner and maintainer:** Sohail Khan  
+**Built with:** AI coding assistance from ChatGPT  
+**License:** MIT
 
-- 50 searchable animation studies organized by category
-- Detail pages with medium and large contained live previews
-- Global light and dark theme plus an independent preview theme
-- Copyable React, CSS, and install snippets
-- Responsive layout, reduced-motion support, and accessible controls
-- Next.js App Router, TypeScript, Motion for React, and custom CSS
+Motion Shelf is a learning and experimentation project. It aims to make motion patterns easier to inspect, adapt, and copy. Some studies are CSS-first examples; advanced shader, canvas, or 3D concepts are presented as starting points unless the page explicitly says otherwise. They should not be mistaken for production WebGL implementations.
+
+## What it includes
+
+- A searchable gallery of 50 motion studies
+- Individual pages with contained medium or large previews
+- Independent light/dark preview surfaces
+- Copyable component markup and matching CSS keyframes
+- Reduced-motion fallbacks and responsive layouts
+- Next.js App Router and TypeScript
 
 ## Run locally
 
 1. Install Node.js 20 or newer.
-2. Install packages with npm install.
-3. Start the dev server with npm run dev.
-4. Open http://localhost:3000.
+2. Run `npm install`.
+3. Run `npm run dev`.
+4. Open `http://localhost:3000`.
 
-## Deploy
+## Using a study
 
-Import this repository into Vercel. The framework is detected as Next.js automatically. No environment variables are required.
-
-## Copy snippets
-
-Open an animation, choose Component, CSS, or Install in the implementation panel, and use Copy. The React starter is built with Motion for React using the motion package. Some advanced ideas—such as shader distortion and spatial scenes—are represented as lightweight, browser-friendly starter treatments; use a WebGL renderer when you need physically accurate 3D or custom shaders.
+Open a study page and copy both the Component and CSS snippets. The Component tab provides the markup; the CSS tab contains the styles and keyframes. The Setup tab explains that no additional package is required for these CSS-only starter examples.
 
 ## Contributing
 
-Add new entries to src/app/animations.ts, add or refine the matching visual treatment in src/app/globals.css, and add a focused code recipe in src/app/components.tsx. Keep previews contained, avoid expensive always-running effects in the gallery grid, and respect reduced-motion preferences.
+Open an issue or pull request with a focused improvement. Keep examples honest about what they implement, avoid fabricated metrics or testimonials, keep previews contained, and respect `prefers-reduced-motion`.
 
-## License
+## A note on authorship
 
-MIT. See LICENSE.
+This is a solo project owned and maintained by Sohail Khan, built with AI coding assistance from ChatGPT. AI assistance is disclosed here because transparent attribution matters.
