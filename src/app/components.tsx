@@ -68,6 +68,7 @@ export function HomePage() {
   const [query, setQuery] = useState("");
   const [category, setCategory] = useState<(typeof categories)[number]>("All");
   const reduced = useReducedMotion();
+  const featuredStudies = animations.filter((animation) => ["portal-transition", "spatial-ui-assembly", "kinetic-typography"].includes(animation.slug));
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
     return animations.filter((animation) => (category === "All" || animation.category === category) && (!q || [animation.name, animation.description, animation.category, ...animation.tags].join(" ").toLowerCase().includes(q)));
@@ -107,6 +108,8 @@ export function HomePage() {
           <div className="hero-demo-stage">
             <div className="demo-orbit demo-orbit-one" /><div className="demo-orbit demo-orbit-two" />
             <motion.div className="demo-object" animate={reduced ? undefined : { y: [0, -8, 0], rotate: [-4, 1, -4], borderRadius: ["28% 72% 61% 39%", "55% 45% 38% 62%", "28% 72% 61% 39%"] }} transition={{ duration: 7, repeat: Infinity, ease: "easeInOut" }}><span /></motion.div>
+            <motion.div className="demo-product-card" animate={reduced ? undefined : { y:[0,-7,0], rotate:[2,0,2] }} transition={{duration:5.5,repeat:Infinity,ease:"easeInOut"}}><div className="demo-product-card-head"><i/><i/><i/><span>OVERVIEW</span></div><div className="demo-product-card-title">Good work,<br/><em>in motion.</em></div><div className="demo-product-card-stats"><div><span>ENGAGEMENT</span><strong>+28.4%</strong></div><div><span>CONVERSION</span><strong>8.62%</strong></div></div><div className="demo-product-card-chart">{[28,45,38,66,54,82,61,96,73].map((height,i)=><i key={i} style={{height:height+"%"}}/>)}</div></motion.div>
+            <motion.div className="demo-floating-chip" animate={reduced ? undefined : {x:[0,4,0],y:[0,-5,0]}} transition={{duration:4.5,repeat:Infinity,ease:"easeInOut"}}><span/> SPRING / 240ms</motion.div>
             <motion.div className="demo-label demo-label--left" animate={reduced ? undefined : { y: [0, 4, 0] }} transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}><span>01</span> Shape morph</motion.div>
             <motion.div className="demo-label demo-label--right" animate={reduced ? undefined : { y: [0, -4, 0] }} transition={{ duration: 4.5, repeat: Infinity, ease: "easeInOut" }}><span>02</span> Spring settle</motion.div>
             <div className="demo-stage-index">A SMALL MOTION STUDY <span>↗</span></div>
@@ -117,6 +120,13 @@ export function HomePage() {
 
       <section id="library" className="library-section">
         <div className="section-heading"><div><Eyebrow>THE COLLECTION</Eyebrow><h2>Browse the studies.</h2><p>Small, focused examples. Each page shows what moves and how to copy it.</p></div><div className="collection-count"><strong>{String(animations.length).padStart(2, "0")}</strong><span>STUDIES IN THIS VERSION</span></div></div>
+        <div className="featured-strip">
+          <div className="featured-strip-heading"><span>CURATED STARTING POINTS</span><strong>Three ways into motion.</strong></div>
+          <div className="featured-grid">{featuredStudies.map((animation, index) => <Link href={"/" + animation.slug} className="featured-card" key={animation.slug}>
+            <div className="featured-card-art"><MiniArtwork animation={animation} /></div>
+            <div className="featured-card-copy"><span>FEATURED STUDY / 0{index+1}</span><h3>{animation.name}</h3><p>{animation.description}</p><i><ArrowUpRight size={15}/></i></div>
+          </Link>)}</div>
+        </div>
         <div className="library-toolbar">
           <div className="category-tabs" role="group" aria-label="Filter by category">{categories.map((item) => <button key={item} type="button" className={"category-tab" + (category === item ? " is-active" : "")} onClick={() => setCategory(item)}>{item}<span>{item === "All" ? animations.length : animations.filter((a) => a.category === item).length}</span></button>)}</div>
           <label className="search-field"><Search size={15} /><input id="animation-search" value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Find an animation..." /><kbd>/</kbd>{query && <button type="button" onClick={() => setQuery("")} aria-label="Clear search"><X size={13} /></button>}</label>
